@@ -20,7 +20,7 @@ The OpenLoong open-source project is jointly operated by Humanoid Robot (Shangha
 - **Ease of Understanding** The code structure is clean and well-organized, following a modular design principle that encapsulates functions efficiently. A data bus is used for inter-module communication, reducing redundancy and lowering overall complexity. The algorithm implementations follow a "Read-Compute-Write" logic, improving code readability and comprehension.
 
 
-  <center><img src="./assets/行走.gif" alt="行走" style="zoom:50%;" /><img src="./assets/踩障碍.gif" alt="踩障碍" style="zoom:50%;" /></center>
+<img src="./assets/行走.gif" alt="行走" style="zoom:50%;" /><img src="./assets/踩障碍.gif" alt="踩障碍" style="zoom:50%;" />
 
 
 
