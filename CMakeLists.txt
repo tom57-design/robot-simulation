@@ -99,3 +99,14 @@ target_link_libraries(walk_mpc_wbc_joystick core mujoco ${sysSimLibs} dl)
 
 add_executable(walk_wbc_staircase demo/walk_wbc_staircase.cpp)
 target_link_libraries(walk_wbc_staircase core mujoco ${sysSimLibs} dl)
+
+
+#### For G1 ####
+add_executable(jump_mpc_G1 demo/jump_mpc_G1.cpp)
+target_link_libraries(jump_mpc_G1 core mujoco ${sysSimLibs} dl)
+
+add_executable(float_control_G1 demo/float_control_G1.cpp)
+target_link_libraries(float_control_G1 core mujoco ${sysSimLibs} dl)
+
+add_executable(walk_wbc_G1 demo/walk_wbc_G1.cpp)
+target_link_libraries(walk_wbc_G1 core mujoco ${sysSimLibs} dl)
