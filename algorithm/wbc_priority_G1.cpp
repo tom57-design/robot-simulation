@@ -69,20 +69,20 @@ WBC_priority_G1::WBC_priority_G1(int model_nv_In, int QP_nvIn, int QP_ncIn, doub
     kin_tasks_walk.addTask("PosRot");
 
     std::vector<std::string> taskOrder_walk;
-    taskOrder_walk.emplace_back("RedundantJoints");
+    // taskOrder_walk.emplace_back("RedundantJoints");
     taskOrder_walk.emplace_back("static_Contact");
-    //    taskOrder_walk.emplace_back("Roll_Pitch_Yaw_Pz");
+    // taskOrder_walk.emplace_back("Roll_Pitch_Yaw_Pz");
     //    taskOrder_walk.emplace_back("PxPy");
     taskOrder_walk.emplace_back("PosRot");
     taskOrder_walk.emplace_back("SwingLeg");
-    taskOrder_walk.emplace_back("HandTrackJoints");
+    // taskOrder_walk.emplace_back("HandTrackJoints");
 
     kin_tasks_walk.buildPriority(taskOrder_walk);
 
     ///-------- stand ------------
     kin_tasks_stand.addTask("static_Contact");
     kin_tasks_stand.addTask("CoMTrack");
-    kin_tasks_stand.addTask("HandTrackJoints");
+    // kin_tasks_stand.addTask("HandTrackJoints");
     kin_tasks_stand.addTask("HipRPY");
     // kin_tasks_stand.addTask("HeadRP");
     kin_tasks_stand.addTask("Pz");
@@ -98,7 +98,7 @@ WBC_priority_G1::WBC_priority_G1(int model_nv_In, int QP_nvIn, int QP_ncIn, doub
     //    taskOrder_stand.emplace_back("HipRPY");
     taskOrder_stand.emplace_back("CoMXY_HipRPY");
     taskOrder_stand.emplace_back("Pz");
-    taskOrder_stand.emplace_back("HandTrackJoints");
+    // taskOrder_stand.emplace_back("HandTrackJoints");
     // taskOrder_stand.emplace_back("HeadRP");
 
     kin_tasks_stand.buildPriority(taskOrder_stand);
@@ -412,10 +412,11 @@ void WBC_priority_G1::computeDdq(Pin_KinDyn_G1 &pinKinDynIn)
         //            kin_tasks_walk.taskLib[id].dJ.block(0,22,3,3).setZero();
         kin_tasks_walk.taskLib[id].W.diagonal() = Eigen::VectorXd::Ones(model_nv);
 
-        std::cout << "Ended static_Contact!" << std::endl;
+        // std::cout << "Ended static_Contact!" << std::endl;
 
         id = kin_tasks_walk.getId("RedundantJoints");
-        kin_tasks_walk.taskLib[id].errX = Eigen::VectorXd::Zero(5);
+
+        // kin_tasks_walk.taskLib[id].errX = Eigen::VectorXd::Zero(5);
 
         // kin_tasks_walk.taskLib[id].errX(0) = 0 - q(21); // 21: head yaw
         // kin_tasks_walk.taskLib[id].errX(1) = 0 - q(22); // 22: head pitch
@@ -444,6 +445,7 @@ void WBC_priority_G1::computeDdq(Pin_KinDyn_G1 &pinKinDynIn)
         // waist-yaw: 12,
         // shoulder-l: 13-15, elbow-l: 16, wrist-roll-l: 17,
         // shoulder-r: 18-20, elbow-r: 21, wrist-roll-r: 22
+        kin_tasks_walk.taskLib[id].errX = Eigen::VectorXd::Zero(1);
         kin_tasks_walk.taskLib[id].errX(0) = 0 - q(12); // 12: waist yaw
 
         kin_tasks_walk.taskLib[id].derrX = Eigen::VectorXd::Zero(1);
@@ -458,7 +460,7 @@ void WBC_priority_G1::computeDdq(Pin_KinDyn_G1 &pinKinDynIn)
         kin_tasks_walk.taskLib[id].dJ = Eigen::MatrixXd::Zero(1, model_nv);
         kin_tasks_walk.taskLib[id].W.diagonal() = Eigen::VectorXd::Ones(model_nv);
 
-        std::cout << "Ended RedundantJoints!" << std::endl;
+        // std::cout << "Ended RedundantJoints!" << std::endl;
 
         id = kin_tasks_walk.getId("Roll_Pitch_Yaw_Pz");
         kin_tasks_walk.taskLib[id].errX = Eigen::VectorXd::Zero(4);
@@ -481,7 +483,7 @@ void WBC_priority_G1::computeDdq(Pin_KinDyn_G1 &pinKinDynIn)
         kin_tasks_walk.taskLib[id].dJ = taskMap * dJ_base;
         kin_tasks_walk.taskLib[id].W.diagonal() = Eigen::VectorXd::Ones(model_nv);
 
-        std::cout << "Ended Pitch_Roll_Yaw_Pz!" << std::endl;
+        // std::cout << "Ended Pitch_Roll_Yaw_Pz!" << std::endl;
 
         id = kin_tasks_walk.getId("PxPy");
         kin_tasks_walk.taskLib[id].errX = Eigen::VectorXd::Zero(2);
@@ -498,7 +500,7 @@ void WBC_priority_G1::computeDdq(Pin_KinDyn_G1 &pinKinDynIn)
         kin_tasks_walk.taskLib[id].dJ = taskMap * dJ_base;
         kin_tasks_walk.taskLib[id].W.diagonal() = Eigen::VectorXd::Ones(model_nv);
 
-        std::cout << "Ended PxPy!" << std::endl;
+        // std::cout << "Ended PxPy!" << std::endl;
 
         id = kin_tasks_walk.getId("PosRot");
         kin_tasks_walk.taskLib[id].errX = Eigen::VectorXd::Zero(6);
@@ -520,7 +522,7 @@ void WBC_priority_G1::computeDdq(Pin_KinDyn_G1 &pinKinDynIn)
         kin_tasks_walk.taskLib[id].dJ = dJ_base;
         kin_tasks_walk.taskLib[id].W.diagonal() = Eigen::VectorXd::Ones(model_nv);
 
-        std::cout << "Ended PosRot!" << std::endl;
+        // std::cout << "Ended PosRot!" << std::endl;
 
         id = kin_tasks_walk.getId("SwingLeg");
         kin_tasks_walk.taskLib[id].errX = Eigen::VectorXd::Zero(6);
@@ -542,7 +544,7 @@ void WBC_priority_G1::computeDdq(Pin_KinDyn_G1 &pinKinDynIn)
         kin_tasks_walk.taskLib[id].dJ.block(0, 18, 6, 1).setZero(); // exculde waist joints
         kin_tasks_walk.taskLib[id].W.diagonal() = Eigen::VectorXd::Ones(model_nv);
 
-        std::cout << "Ended SwingLeg!" << std::endl;
+        // std::cout << "Ended SwingLeg!" << std::endl;
 
         // task 6: hand track
         // define swing arm motion
@@ -605,7 +607,7 @@ void WBC_priority_G1::computeDdq(Pin_KinDyn_G1 &pinKinDynIn)
 
         auto resLeg = pinKinDynIn.computeInK_Hand(hd_l_rot_des, hd_l_pos_L_des, hd_r_rot_des, hd_r_pos_L_des);
 
-        std::cout << "Ended HandTrack!" << std::endl;
+        // std::cout << "Ended HandTrack!" << std::endl;
 
         // id = kin_tasks_walk.getId("HandTrackJoints");
         // kin_tasks_walk.taskLib[id].errX = Eigen::VectorXd::Zero(14);
@@ -638,7 +640,7 @@ void WBC_priority_G1::computeDdq(Pin_KinDyn_G1 &pinKinDynIn)
         kin_tasks_walk.taskLib[id].dJ = Eigen::MatrixXd::Zero(10, model_nv);
         kin_tasks_walk.taskLib[id].W.diagonal() = Eigen::VectorXd::Ones(model_nv);
 
-        std::cout << "Ended HandTrackJoints!" << std::endl;
+        // std::cout << "Ended HandTrackJoints!" << std::endl;
     }
 
     /// -------- stand -------------
@@ -678,7 +680,7 @@ void WBC_priority_G1::computeDdq(Pin_KinDyn_G1 &pinKinDynIn)
         kin_tasks_stand.taskLib[id].dJ = Eigen::MatrixXd::Zero(12, model_nv);
         kin_tasks_stand.taskLib[id].W.diagonal() = Eigen::VectorXd::Ones(model_nv);
 
-        std::cout << "Ended stand static_Contact!" << std::endl;
+        // std::cout << "Ended stand static_Contact!" << std::endl;
 
         id = kin_tasks_stand.getId("HipRPY");
         kin_tasks_stand.taskLib[id].errX = Eigen::VectorXd::Zero(3);
@@ -703,7 +705,7 @@ void WBC_priority_G1::computeDdq(Pin_KinDyn_G1 &pinKinDynIn)
         kin_tasks_stand.taskLib[id].dJ = Eigen::MatrixXd::Zero(3, model_nv);
         kin_tasks_stand.taskLib[id].W.diagonal() = Eigen::VectorXd::Ones(model_nv);
 
-        std::cout << "Ended HipRPY!" << std::endl;
+        // std::cout << "Ended HipRPY!" << std::endl;
 
         id = kin_tasks_stand.getId("Pz");
         kin_tasks_stand.taskLib[id].errX = Eigen::VectorXd::Zero(1);
@@ -718,16 +720,16 @@ void WBC_priority_G1::computeDdq(Pin_KinDyn_G1 &pinKinDynIn)
         kin_tasks_stand.taskLib[id].J = taskMap * J_base;
 
         // kin_tasks_stand.taskLib[id].J.block(0, 22, 1, 3).setZero();
-        kin_tasks_stand.taskLib[id].J.block(0, 18, 1, 1).setZero();
+        kin_tasks_stand.taskLib[id].J.block(0, 18, 1, 1).setZero(); // exclude waist joint
 
         kin_tasks_stand.taskLib[id].dJ = taskMap * dJ_base;
 
         // kin_tasks_stand.taskLib[id].dJ.block(0, 22, 1, 3).setZero();
-        kin_tasks_stand.taskLib[id].J.block(0, 18, 1, 1).setZero();
+        kin_tasks_stand.taskLib[id].J.block(0, 18, 1, 1).setZero(); // exclude waist joint
 
         kin_tasks_stand.taskLib[id].W.diagonal() = Eigen::VectorXd::Ones(model_nv);
 
-        std::cout << "Ended Pz!" << std::endl;
+        // std::cout << "Ended Pz!" << std::endl;
 
         id = kin_tasks_stand.getId("CoMTrack");
         kin_tasks_stand.taskLib[id].errX = Eigen::VectorXd::Zero(2);
@@ -747,7 +749,7 @@ void WBC_priority_G1::computeDdq(Pin_KinDyn_G1 &pinKinDynIn)
         //        std::cout<<"pCoMCur"<<std::endl<<pCoMCur.transpose()<<std::endl;
         //        std::cout<<"pCoMDes"<<std::endl<<pCoMDes.transpose()<<std::endl;
 
-        std::cout << "Ended CoMTrack!" << std::endl;
+        // std::cout << "Ended CoMTrack!" << std::endl;
 
         id = kin_tasks_stand.getId("CoMXY_HipRPY");
         taskMapRPY = Eigen::MatrixXd::Zero(3, 6);
@@ -781,7 +783,7 @@ void WBC_priority_G1::computeDdq(Pin_KinDyn_G1 &pinKinDynIn)
         kin_tasks_stand.taskLib[id].dJ = Eigen::MatrixXd::Zero(5, model_nv);
         kin_tasks_stand.taskLib[id].W.diagonal() = Eigen::VectorXd::Ones(model_nv);
 
-        std::cout << "Ended CoMXY_HipRPY!" << std::endl;
+        // std::cout << "Ended CoMXY_HipRPY!" << std::endl;
 
         // kin_tasks_stand.taskLib[id].W.diagonal()(22) = 200; // 16+6: waist pitch
         // kin_tasks_stand.taskLib[id].W.diagonal()(23) = 200; // 17+6: waist roll
@@ -840,7 +842,7 @@ void WBC_priority_G1::computeDdq(Pin_KinDyn_G1 &pinKinDynIn)
         kin_tasks_walk.taskLib[id].dJ = Eigen::MatrixXd::Zero(10, model_nv);
         kin_tasks_walk.taskLib[id].W.diagonal() = Eigen::VectorXd::Ones(model_nv);
 
-        std::cout << "Ended stand HandTrackJoints!" << std::endl;
+        // std::cout << "Ended stand HandTrackJoints!" << std::endl;
 
         // Enter here functions to send actuator commands, like:
         // arm-l: 0-6, arm-r: 7-13, head: 14,15, waist: 16-18, leg-l: 19-24, leg-r: 25-30
@@ -878,7 +880,7 @@ void WBC_priority_G1::computeDdq(Pin_KinDyn_G1 &pinKinDynIn)
         kin_tasks_stand.taskLib[id].dJ = taskMap * dJ_base;
         kin_tasks_stand.taskLib[id].W.diagonal() = Eigen::VectorXd::Ones(model_nv);
 
-        std::cout << "Ended Roll_Pitch_Yaw!" << std::endl;
+        // std::cout << "Ended Roll_Pitch_Yaw!" << std::endl;
 
         id = kin_tasks_stand.getId("fixedWaist");
 
@@ -916,47 +918,43 @@ void WBC_priority_G1::computeDdq(Pin_KinDyn_G1 &pinKinDynIn)
         kin_tasks_stand.taskLib[id].dJ = Eigen::MatrixXd::Zero(1, model_nv);
         kin_tasks_stand.taskLib[id].W.diagonal() = Eigen::VectorXd::Ones(model_nv);
 
-        std::cout << "Ended fixedWaist!" << std::endl;
+        // std::cout << "Ended fixedWaist!" << std::endl;
     }
 
     if (motionStateCur == DataBus::Walk || motionStateCur == DataBus::Walk2Stand)
     {
-        std::cout << "Entered motionStateCur == DataBus::Walk || motionStateCur == DataBus::Walk2Stand" << std::endl;
+        // std::cout << "Entered motionStateCur == DataBus::Walk || motionStateCur == DataBus::Walk2Stand" << std::endl;
 
         kin_tasks_walk.computeAll(des_delta_q, des_dq, des_ddq, dyn_M, dyn_M_inv, dq);
         delta_q_final_kin = kin_tasks_walk.out_delta_q;
         dq_final_kin = kin_tasks_walk.out_dq;
         ddq_final_kin = kin_tasks_walk.out_ddq;
 
-        std::cout << "Ended motionStateCur == DataBus::Walk || motionStateCur == DataBus::Walk2Stand" << std::endl;
+        // std::cout << "Ended motionStateCur == DataBus::Walk || motionStateCur == DataBus::Walk2Stand" << std::endl;
     }
     else if (motionStateCur == DataBus::Stand)
     {
-        std::cout << "Entered motionStateCur == DataBus::Stand" << std::endl;
+        // std::cout << "Entered motionStateCur == DataBus::Stand" << std::endl;
 
         kin_tasks_stand.computeAll(des_delta_q, des_dq, des_ddq, dyn_M, dyn_M_inv, dq);
-        std::cout << "Stand 1" << std::endl;
 
         delta_q_final_kin = kin_tasks_stand.out_delta_q;
-        std::cout << "Stand 2" << std::endl;
 
         dq_final_kin = kin_tasks_stand.out_dq;
-        std::cout << "Stand 3" << std::endl;
 
         ddq_final_kin = kin_tasks_stand.out_ddq;
-        std::cout << "Stand 4" << std::endl;
 
-        std::cout << "Ended motionStateCur == DataBus::Stand" << std::endl;
+        // std::cout << "Ended motionStateCur == DataBus::Stand" << std::endl;
     }
     else
     {
-        std::cout << "Entered motionStateCur == else" << std::endl;
+        // std::cout << "Entered motionStateCur == else" << std::endl;
 
         delta_q_final_kin = Eigen::VectorXd::Zero(model_nv);
         dq_final_kin = Eigen::VectorXd::Zero(model_nv);
         ddq_final_kin = Eigen::VectorXd::Zero(model_nv);
 
-        std::cout << "Ended motionStateCur == else" << std::endl;
+        // std::cout << "Ended motionStateCur == else" << std::endl;
     }
 
     std::cout << "Ended final WBC output collection!" << std::endl;

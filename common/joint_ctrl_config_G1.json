@@ -1,8 +1,8 @@
 {
    "left_ankle_pitch_joint" : {
       "PVT_LPF_Fc" : 20,
-      "kd" : 80.0,
-      "kp" : 400.0,
+      "kd" : 160.0,
+      "kp" : 1600.0,
       "maxPos" : 0.61087,
       "maxSpeed" : 48.8,
       "maxTorque" : 58.5,
@@ -10,8 +10,8 @@
    },
    "left_ankle_roll_joint" : {
       "PVT_LPF_Fc" : 20,
-      "kd" : 40.0,
-      "kp" : 80.0,
+      "kd" : 100.0,
+      "kp" : 800.0,
       "maxPos" : 0.43633,
       "maxSpeed" : 48.8,
       "maxTorque" : 58.5,
@@ -19,8 +19,8 @@
    },
    "right_ankle_pitch_joint" : {
       "PVT_LPF_Fc" : 20,
-      "kd" : 80.0,
-      "kp" : 400.0,
+      "kd" : 160.0,
+      "kp" : 1600.0,
       "maxPos" : 0.61087,
       "maxSpeed" : 48.8,
       "maxTorque" : 58.5,
@@ -28,8 +28,8 @@
    },
    "right_ankle_roll_joint" : {
       "PVT_LPF_Fc" : 20,
-      "kd" : 40.0,
-      "kp" : 80.0,
+      "kd" : 100.0,
+      "kp" : 800.0,
       "maxPos" : 0.43633,
       "maxSpeed" : 48.8,
       "maxTorque" : 58.5,
@@ -182,7 +182,7 @@
    "left_hip_pitch_joint" : {
       "PVT_LPF_Fc" : 50,
       "kd" : 400.0,
-      "kp" : 1600.0,
+      "kp" : 2000.0,
       "maxPos" : 1.83260,
       "maxSpeed" : 19.16,
       "maxTorque" : 396,
@@ -209,7 +209,7 @@
    "right_hip_pitch_joint" : {
       "PVT_LPF_Fc" : 50,
       "kd" : 400.0,
-      "kp" : 1600.0,
+      "kp" : 2000.0,
       "maxPos" : 1.83260,
       "maxSpeed" : 19.16,
       "maxTorque" : 396.0,
@@ -235,8 +235,8 @@
    },
    "left_knee_joint" : {
       "PVT_LPF_Fc" : 50,
-      "kd" : 400.0,
-      "kp" : 1600.0,
+      "kd" : 100.0,
+      "kp" : 2000.0,
       "maxPos" : 0.08727,
       "maxSpeed" : 19.16,
       "maxTorque" : 396.0,
@@ -244,8 +244,8 @@
    },
    "right_knee_joint" : {
       "PVT_LPF_Fc" : 50,
-      "kd" : 400.0,
-      "kp" : 1600.0,
+      "kd" : 100.0,
+      "kp" : 2000.0,
       "maxPos" : 0.08727,
       "maxSpeed" : 19.16,
       "maxTorque" : 396.0,

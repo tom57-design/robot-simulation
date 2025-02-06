@@ -60,12 +60,14 @@ int main(int argc, char **argv)
 
     // ini position and posture for foot-end and hand
     Eigen::Vector3d fe_l_pos_W_des, fe_r_pos_W_des;
+
     // Eigen::Vector3d fe_l_pos_L_des = {-0.018, 0.113, -1.01};
     // Eigen::Vector3d fe_r_pos_L_des = {-0.018, -0.116, -1.01};
-    Eigen::Vector3d fe_l_pos_L_des = {0.003, 0.18, -0.656};  // Tuned
-    Eigen::Vector3d fe_r_pos_L_des = {0.003, -0.18, -0.656}; // Tuned
-    Eigen::Vector3d fe_l_eul_L_des = {-0.000, -0.008, -0.000};
-    Eigen::Vector3d fe_r_eul_L_des = {0.000, -0.008, 0.000};
+    Eigen::Vector3d fe_l_pos_L_des = {0.04, 0.18, -0.72};     // Tuned
+    Eigen::Vector3d fe_r_pos_L_des = {0.04, -0.18, -0.72};    // Tuned
+    Eigen::Vector3d fe_l_eul_L_des = {-0.000, -0.15, -0.000}; // Tuned
+    Eigen::Vector3d fe_r_eul_L_des = {0.000, -0.15, 0.000};   // Tuned
+
     Eigen::Matrix3d fe_l_rot_des = eul2Rot(fe_l_eul_L_des(0), fe_l_eul_L_des(1), fe_l_eul_L_des(2));
     Eigen::Matrix3d fe_r_rot_des = eul2Rot(fe_r_eul_L_des(0), fe_r_eul_L_des(1), fe_r_eul_L_des(2));
 
@@ -75,8 +77,9 @@ int main(int argc, char **argv)
     // Eigen::Vector3d hd_r_pos_L_des = {-0.02, -0.32, -0.159};
     Eigen::Vector3d hd_l_pos_L_des = {-0.0, 0.2, 0.03};  // Tuned
     Eigen::Vector3d hd_r_pos_L_des = {-0.0, -0.2, 0.03}; // Tuned
-    Eigen::Vector3d hd_l_eul_L_des = {-0, 0, 0};
-    Eigen::Vector3d hd_r_eul_L_des = {0, 0, 0};
+    Eigen::Vector3d hd_l_eul_L_des = {-0, 0, 0};         // Tuned
+    Eigen::Vector3d hd_r_eul_L_des = {0, 0, 0};          // Tuned
+
     Eigen::Matrix3d hd_l_rot_des = eul2Rot(hd_l_eul_L_des(0), hd_l_eul_L_des(1), hd_l_eul_L_des(2));
     Eigen::Matrix3d hd_r_rot_des = eul2Rot(hd_r_eul_L_des(0), hd_r_eul_L_des(1), hd_r_eul_L_des(2));
 
@@ -85,10 +88,10 @@ int main(int argc, char **argv)
     auto resHand = kinDynSolver.computeInK_Hand(hd_l_rot_des, hd_l_pos_L_des, hd_r_rot_des, hd_r_pos_L_des);
 
     // print info to the console
-    double startJumpingTime = 1.8; // start jumping time
-    double prepareTime = 1.0;
+    double startJumpingTime = 1.2; // start jumping time
+    double prepareTime = 0.75;
     uint16_t jump_state = 0;
-    double stand_z = -0.5;
+    double stand_z = -0.25;
     double jump_z = 0.2;
     double count = 0.0;
 
@@ -387,8 +390,8 @@ int main(int argc, char **argv)
             {
                 Uje.setZero();
                 Uje = Jac_stand.transpose() * (-1.0) * RobotState.fe_react_tau_cmd.block<nu - 1, 1>(0, 0);
-                double jTor_max[6] = {800.0, 800.0, 400.0, 1600.0, 160.0, 40.0};
-                double jTor_min[6] = {-800.0, -800.0, -400.0, -1600.0, -160.0, -40.0};
+                double jTor_max[6] = {1600.0, 1600.0, 800.0, 3200.0, 320.0, 80.0};
+                double jTor_min[6] = {-1600.0, -1600.0, -800.0, -3200.0, -320.0, -80.0};
 
                 for (int i = 0; i < 6; i++)
                 {

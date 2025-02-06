@@ -26,17 +26,17 @@ mjData *mj_data = mj_makeData(mj_model);
 int main(int argc, const char **argv)
 {
     // ini classes
-    UIctr uiController(mj_model, mj_data);                                         // UI control for Mujoco
-    MJ_interface_G1 mj_interface(mj_model, mj_data);                               // data interface for Mujoco
-    Pin_KinDyn_G1 kinDynSolver("../models/unitree_g1/g1_23dof.urdf");              // kinematics and dynamics solver
-    DataBus RobotState(kinDynSolver.model_nv);                                     // data bus
+    UIctr uiController(mj_model, mj_data);                                            // UI control for Mujoco
+    MJ_interface_G1 mj_interface(mj_model, mj_data);                                  // data interface for Mujoco
+    Pin_KinDyn_G1 kinDynSolver("../models/unitree_g1/g1_23dof.urdf");                 // kinematics and dynamics solver
+    DataBus RobotState(kinDynSolver.model_nv);                                        // data bus
     PVT_Ctr_G1 pvtCtr(mj_model->opt.timestep, "../common/joint_ctrl_config_G1.json"); // PVT joint control
-    DataLogger logger("../record/datalog.log");                                    // data logger
+    DataLogger logger("../record/datalog.log");                                       // data logger
 
     // variables ini
     double stand_legLength = 1.1; //-0.95; // desired baselink height
-    double foot_height = 0.07;     // distance between the foot ankel joint and the bottom
-    double xv_des = 0.7;           // desired velocity in x direction
+    double foot_height = 0.07;    // distance between the foot ankel joint and the bottom
+    double xv_des = 0.7;          // desired velocity in x direction
 
     RobotState.width_hips = 0.229;
     // mju_copy(mj_data->qpos, mj_model->key_qpos, mj_model->nq*1); // set ini pos in Mujoco
@@ -49,10 +49,12 @@ int main(int argc, const char **argv)
     std::vector<double> motors_vel_cur(model_nv - 6, 0);
     std::vector<double> motors_tau_des(model_nv - 6, 0);
     std::vector<double> motors_tau_cur(model_nv - 6, 0);
+
     Eigen::Vector3d fe_l_pos_L_des = {-0.018, 0.113, -stand_legLength};
     Eigen::Vector3d fe_r_pos_L_des = {-0.018, -0.116, -stand_legLength};
     Eigen::Vector3d fe_l_eul_L_des = {-0.000, -0.008, -0.000};
     Eigen::Vector3d fe_r_eul_L_des = {0.000, -0.008, 0.000};
+
     Eigen::Matrix3d fe_l_rot_des = eul2Rot(fe_l_eul_L_des(0), fe_l_eul_L_des(1), fe_l_eul_L_des(2));
     Eigen::Matrix3d fe_r_rot_des = eul2Rot(fe_r_eul_L_des(0), fe_r_eul_L_des(1), fe_r_eul_L_des(2));
 
@@ -60,6 +62,7 @@ int main(int argc, const char **argv)
     Eigen::Vector3d hd_r_pos_L_des = {-0.02, -0.32, -0.159};
     Eigen::Vector3d hd_l_eul_L_des = {-1.253, 0.122, -1.732};
     Eigen::Vector3d hd_r_eul_L_des = {1.253, 0.122, 1.732};
+
     Eigen::Matrix3d hd_l_rot_des = eul2Rot(hd_l_eul_L_des(0), hd_l_eul_L_des(1), hd_l_eul_L_des(2));
     Eigen::Matrix3d hd_r_rot_des = eul2Rot(hd_r_eul_L_des(0), hd_r_eul_L_des(1), hd_r_eul_L_des(2));
 
@@ -104,17 +107,29 @@ int main(int argc, const char **argv)
             mj_interface.dataBusWrite(RobotState);
 
             // inverse kinematics
-            fe_l_pos_L_des << -0.018, 0.0937, -stand_legLength;
-            fe_r_pos_L_des << -0.018, -0.0952, -stand_legLength;
-            fe_l_eul_L_des << -0.000, -0.00, -0.000;
-            fe_r_eul_L_des << 0.000, -0.00, 0.000;
+            // fe_l_pos_L_des << -0.018, 0.0937, -stand_legLength;
+            // fe_r_pos_L_des << -0.018, -0.0952, -stand_legLength;
+            // fe_l_eul_L_des << -0.000, -0.00, -0.000;
+            // fe_r_eul_L_des << 0.000, -0.00, 0.000;
+
+            Eigen::Vector3d fe_l_pos_L_des = {0.04, 0.18, -0.72};     // Tuned
+            Eigen::Vector3d fe_r_pos_L_des = {0.04, -0.18, -0.72};    // Tuned
+            Eigen::Vector3d fe_l_eul_L_des = {-0.000, -0.15, -0.000}; // Tuned
+            Eigen::Vector3d fe_r_eul_L_des = {0.000, -0.15, 0.000};   // Tuned
+
             fe_l_rot_des = eul2Rot(fe_l_eul_L_des(0), fe_l_eul_L_des(1), fe_l_eul_L_des(2)); // roll, pitch, yaw
             fe_r_rot_des = eul2Rot(fe_r_eul_L_des(0), fe_r_eul_L_des(1), fe_r_eul_L_des(2));
 
-            hd_l_pos_L_des = {-0.02, 0.32, -0.159};
-            hd_r_pos_L_des = {-0.02, -0.32, -0.159};
-            hd_l_eul_L_des = {-1.253, 0.122, -1.732};
-            hd_r_eul_L_des = {1.253, 0.122, 1.732};
+            // hd_l_pos_L_des = {-0.02, 0.32, -0.159};
+            // hd_r_pos_L_des = {-0.02, -0.32, -0.159};
+            // hd_l_eul_L_des = {-1.253, 0.122, -1.732};
+            // hd_r_eul_L_des = {1.253, 0.122, 1.732};
+
+            Eigen::Vector3d hd_l_pos_L_des = {-0.0, 0.2, 0.03};  // Tuned
+            Eigen::Vector3d hd_r_pos_L_des = {-0.0, -0.2, 0.03}; // Tuned
+            Eigen::Vector3d hd_l_eul_L_des = {-0, 0, 0};
+            Eigen::Vector3d hd_r_eul_L_des = {0, 0, 0};
+
             hd_l_rot_des = eul2Rot(hd_l_eul_L_des(0), hd_l_eul_L_des(1), hd_l_eul_L_des(2));
             hd_r_rot_des = eul2Rot(hd_r_eul_L_des(0), hd_r_eul_L_des(1), hd_r_eul_L_des(2));
 
