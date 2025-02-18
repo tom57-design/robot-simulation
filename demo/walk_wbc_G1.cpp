@@ -35,7 +35,7 @@ int main(int argc, const char **argv)
     Pin_KinDyn_G1 kinDynSolver("../models/unitree_g1/g1_23dof.urdf");                         // kinematics and dynamics solver
     DataBus RobotState(kinDynSolver.model_nv);                                                // data bus
     WBC_priority_G1 WBC_solv(kinDynSolver.model_nv, 6 + 12, 22, 0.7, mj_model->opt.timestep); // WBC solver
-    GaitScheduler gaitScheduler(0.4, mj_model->opt.timestep);                             // gait scheduler
+    GaitScheduler gaitScheduler(0.4, mj_model->opt.timestep);                                 // gait scheduler
     PVT_Ctr_G1 pvtCtr(mj_model->opt.timestep, "../common/joint_ctrl_config_G1.json");         // PVT joint control
     FootPlacement footPlacement;                                                              // foot-placement planner
     JoyStickInterpreter jsInterp(mj_model->opt.timestep);                                     // desired baselink velocity generator
@@ -44,12 +44,14 @@ int main(int argc, const char **argv)
     // variables ini
     double stand_legLength = 0.69; // desired baselink height
     double foot_height = 0.07;     // distance between the foot ankel joint and the bottom
-    double xv_des = 2 * 0.7;       // desired velocity in x direction
+    double xv_des = 1.2;       // desired velocity in x direction
 
     RobotState.width_hips = 0.229;
-    footPlacement.kp_vx = 50 * 0.03;
+
+    gaitScheduler.FzThrehold = 50;
+    footPlacement.kp_vx = 50 * 0.03 / 1.5;
     footPlacement.kp_vy = 10 * 0.035;
-    footPlacement.kp_wz = 10 * 0.03;
+    footPlacement.kp_wz = 0.03;
     footPlacement.stepHeight = 0.25 / 2;
     footPlacement.legLength = stand_legLength;
     // mju_copy(mj_data->qpos, mj_model->key_qpos, mj_model->nq*1); // set ini pos in Mujoco
@@ -134,7 +136,7 @@ int main(int argc, const char **argv)
             mj_step(mj_model, mj_data);
 
             simTime = mj_data->time;
-            printf("-------------%.3f s------------\n", simTime);
+            // printf("-------------%.3f s------------\n", simTime);
 
             mj_interface.updateSensorValues();
 
@@ -151,11 +153,11 @@ int main(int argc, const char **argv)
 
             if (simTime > startWalkingTime)
             {
-                std::cout << "Started Walking!!!" << std::endl;
+                // std::cout << "Started Walking!!!" << std::endl;
 
-                jsInterp.setWzDesLPara(0, 0.2);
-                jsInterp.setVxDesLPara(xv_des, 0.2);    // jsInterp.setVxDesLPara(0.9,1);
-                RobotState.motionState = DataBus::Walk; // start walking
+                jsInterp.setWzDesLPara(0, 0.2 * 5.5);
+                jsInterp.setVxDesLPara(xv_des, 0.2 * 5.5); // jsInterp.setVxDesLPara(0.9,1);
+                RobotState.motionState = DataBus::Walk;    // start walking
             }
             else
 
@@ -167,7 +169,7 @@ int main(int argc, const char **argv)
 
             if (simTime >= startSteppingTime)
             {
-                std::cout << "Started Stepping!!!" << std::endl;
+                // std::cout << "Started Stepping!!!" << std::endl;
 
                 // gait scheduler
                 gaitScheduler.dataBusRead(RobotState);
@@ -192,9 +194,9 @@ int main(int argc, const char **argv)
                 0, 0, 370, 0, 0, 0;
 
             // adjust des_delata_q, des_dq and des_ddq to achieve forward walking
-            if (simTime > startWalkingTime + 0.5)
+            if (simTime > startWalkingTime + 0.4)
             {
-                std::cout << "Started Forward Walking!!!" << std::endl;
+                // std::cout << "Started Forward Walking!!!" << std::endl;
 
                 RobotState.des_delta_q.block<2, 1>(0, 0) << jsInterp.vx_W * mj_model->opt.timestep, jsInterp.vy_W * mj_model->opt.timestep;
                 RobotState.des_delta_q(5) = jsInterp.wz_L * mj_model->opt.timestep;
@@ -273,9 +275,9 @@ int main(int argc, const char **argv)
             logger.recItermData("baseAngVel", RobotState.baseAngVel);
             logger.finishLine();
 
-            printf("rpyVal=[%.5f, %.5f, %.5f]\n", RobotState.rpy[0], RobotState.rpy[1], RobotState.rpy[2]);
-            printf("gps=[%.5f, %.5f, %.5f]\n", RobotState.basePos[0], RobotState.basePos[1], RobotState.basePos[2]);
-            printf("vel=[%.5f, %.5f, %.5f]\n", RobotState.baseLinVel[0], RobotState.baseLinVel[1], RobotState.baseLinVel[2]);
+            // printf("rpyVal=[%.5f, %.5f, %.5f]\n", RobotState.rpy[0], RobotState.rpy[1], RobotState.rpy[2]);
+            // printf("gps=[%.5f, %.5f, %.5f]\n", RobotState.basePos[0], RobotState.basePos[1], RobotState.basePos[2]);
+            // printf("vel=[%.5f, %.5f, %.5f]\n", RobotState.baseLinVel[0], RobotState.baseLinVel[1], RobotState.baseLinVel[2]);
         }
 
         if (mj_data->time >= simEndTime)

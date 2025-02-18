@@ -110,3 +110,6 @@ target_link_libraries(float_control_G1 core mujoco ${sysSimLibs} dl)
 
 add_executable(walk_wbc_G1 demo/walk_wbc_G1.cpp)
 target_link_libraries(walk_wbc_G1 core mujoco ${sysSimLibs} dl)
+
+add_executable(fixed_feet_wbc_G1 demo/fixed_feet_wbc_G1.cpp)
+target_link_libraries(fixed_feet_wbc_G1 core mujoco ${sysSimLibs} dl)

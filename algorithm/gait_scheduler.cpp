@@ -120,6 +120,8 @@ void GaitScheduler::step() {
             swingStartPos_W=fe_l_pos_W;
             stanceStartPos_W=fe_r_pos_W;
             phi=0;
+            
+            std::cout << "Switching to Right Stance\n" << std::endl;
         }
     }
     else if(legState == DataBus::RSt && FLest[2] >= FzThrehold && phi>=0.6){
@@ -128,6 +130,8 @@ void GaitScheduler::step() {
             swingStartPos_W = fe_r_pos_W;
             stanceStartPos_W = fe_l_pos_W;
             phi = 0;
+
+            std::cout << "Switching to Left Stance\n" << std::endl;
         }
     }
 
