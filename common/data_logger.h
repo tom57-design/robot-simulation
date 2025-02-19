@@ -21,10 +21,11 @@ Feel free to use in any purpose, and cite OpenLoong-Dynamics-Control in any styl
 #include <stdexcept>
 #include "Eigen/Dense"
 
-class DataLogger {
+class DataLogger
+{
 public:
     DataLogger(std::string fileNameIn);
-    void addIterm(const std::string &name, const int & len);
+    void addIterm(const std::string &name, const int &len);
     void finishItermAdding();
     void startNewLine();
     void recItermData(const std::string &name, double *dataIn);
@@ -32,6 +33,10 @@ public:
     void recItermData(const std::string &name, const Eigen::VectorXd &dataIn);
     void recItermData(const std::string &name, const std::vector<double> &dataIn);
     void finishLine();
+
+    // Added
+    void writeHeaders();
+
 private:
     int colCout{0};
     std::string filePath, fileName;
@@ -46,5 +51,3 @@ private:
     quill::Logger *dl;
     quill::Handler *file_handler;
 };
-
-

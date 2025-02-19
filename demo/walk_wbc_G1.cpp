@@ -1,10 +1,3 @@
-/*
-This is part of OpenLoong Dynamics Control, an open project for the control of biped robot,
-Copyright (C) 2024 Humanoid Robot (Shanghai) Co., Ltd, under Apache 2.0.
-Feel free to use in any purpose, and cite OpenLoong-Dynamics-Control in any style, to contribute to the advancement of the community.
- <https://atomgit.com/openloong/openloong-dyn-control.git>
- <web@openloong.org.cn>
-*/
 #include <mujoco/mujoco.h>
 #include <GLFW/glfw3.h>
 #include <cstdio>
@@ -44,12 +37,12 @@ int main(int argc, const char **argv)
     // variables ini
     double stand_legLength = 0.69; // desired baselink height
     double foot_height = 0.07;     // distance between the foot ankel joint and the bottom
-    double xv_des = 1.2;       // desired velocity in x direction
+    double xv_des = 1.2;           // desired velocity in x direction
 
     RobotState.width_hips = 0.229;
 
-    gaitScheduler.FzThrehold = 50;
-    footPlacement.kp_vx = 50 * 0.03 / 1.5;
+    gaitScheduler.FzThrehold = 150;
+    footPlacement.kp_vx = 50 * 0.03;
     footPlacement.kp_vy = 10 * 0.035;
     footPlacement.kp_wz = 0.03;
     footPlacement.stepHeight = 0.25 / 2;
@@ -64,10 +57,6 @@ int main(int argc, const char **argv)
     std::vector<double> motors_vel_cur(model_nv - 6, 0);
     std::vector<double> motors_tau_des(model_nv - 6, 0);
     std::vector<double> motors_tau_cur(model_nv - 6, 0);
-    // Eigen::Vector3d fe_l_pos_L_des = {0.003, 0.16, -stand_legLength};
-    // Eigen::Vector3d fe_r_pos_L_des = {0.003, -0.18, -stand_legLength};
-    // Eigen::Vector3d fe_l_eul_L_des = {-0.000, -0.008, -0.000};
-    // Eigen::Vector3d fe_r_eul_L_des = {0.000, -0.008, 0.000};
 
     Eigen::Vector3d fe_l_pos_L_des = {0.04, 0.18, -0.72};     // Tuned
     Eigen::Vector3d fe_r_pos_L_des = {0.04, -0.18, -0.72};    // Tuned
@@ -76,11 +65,6 @@ int main(int argc, const char **argv)
 
     Eigen::Matrix3d fe_l_rot_des = eul2Rot(fe_l_eul_L_des(0), fe_l_eul_L_des(1), fe_l_eul_L_des(2));
     Eigen::Matrix3d fe_r_rot_des = eul2Rot(fe_r_eul_L_des(0), fe_r_eul_L_des(1), fe_r_eul_L_des(2));
-
-    // Eigen::Vector3d hd_l_pos_L_des = {-0.02, 0.32, -0.159};
-    // Eigen::Vector3d hd_r_pos_L_des = {-0.02, -0.32, -0.159};
-    // Eigen::Vector3d hd_l_eul_L_des = {-1.253, 0.122, -1.732};
-    // Eigen::Vector3d hd_r_eul_L_des = {1.253, 0.122, 1.732};
 
     Eigen::Vector3d hd_l_pos_L_des = {-0.0, 0.2, 0.03};  // Tuned
     Eigen::Vector3d hd_r_pos_L_des = {-0.0, -0.2, 0.03}; // Tuned
@@ -109,6 +93,13 @@ int main(int argc, const char **argv)
     logger.addIterm("baseAcc", 3);
     logger.addIterm("baseAngVel", 3);
     logger.finishItermAdding();
+
+    // Write the headers to the first row of the log file
+    logger.writeHeaders();
+
+    // Define logging interval (e.g., 0.01s for 100Hz logging)
+    double log_interval = 0.01;
+    double last_log_time = 0.0;
 
     /// ----------------- sim Loop ---------------
     double simEndTime = 30;
@@ -147,9 +138,6 @@ int main(int argc, const char **argv)
             kinDynSolver.computeJ_dJ();
             kinDynSolver.computeDyn();
             kinDynSolver.dataBusWrite(RobotState);
-
-            // Enter here functions to send actuator commands, like:
-            // arm-l: 0-6, arm-r: 7-13, head: 14,15, waist: 16-18, leg-l: 19-24, leg-r: 25-30
 
             if (simTime > startWalkingTime)
             {
@@ -241,13 +229,6 @@ int main(int argc, const char **argv)
             }
             else
             {
-                // pvtCtr.setJointPD(100, 10, "J_ankle_l_pitch");
-                // pvtCtr.setJointPD(100, 10, "J_ankle_l_roll");
-                // pvtCtr.setJointPD(100, 10, "J_ankle_r_pitch");
-                // pvtCtr.setJointPD(100, 10, "J_ankle_r_roll");
-                // pvtCtr.setJointPD(1000, 100, "J_knee_l_pitch");
-                // pvtCtr.setJointPD(1000, 100, "J_knee_r_pitch");
-
                 //**** For G1-23DOF ****//
                 pvtCtr.setJointPD(800, 10, "left_ankle_pitch_joint");
                 pvtCtr.setJointPD(100, 10, "left_ankle_roll_joint");
@@ -262,18 +243,24 @@ int main(int argc, const char **argv)
 
             mj_interface.setMotorsTorque(RobotState.motors_tor_out);
 
-            logger.startNewLine();
-            logger.recItermData("simTime", simTime);
-            logger.recItermData("motors_pos_cur", RobotState.motors_pos_cur);
-            logger.recItermData("motors_vel_cur", RobotState.motors_vel_cur);
-            logger.recItermData("rpy", RobotState.rpy);
-            logger.recItermData("fL", RobotState.fL);
-            logger.recItermData("fR", RobotState.fR);
-            logger.recItermData("basePos", RobotState.basePos);
-            logger.recItermData("baseLinVel", RobotState.baseLinVel);
-            logger.recItermData("baseAcc", RobotState.baseAcc);
-            logger.recItermData("baseAngVel", RobotState.baseAngVel);
-            logger.finishLine();
+            // Logging condition: log only if log_interval has passed
+            if (simTime - last_log_time >= log_interval)
+            {
+                logger.startNewLine();
+                logger.recItermData("simTime", simTime);
+                logger.recItermData("motors_pos_cur", RobotState.motors_pos_cur);
+                logger.recItermData("motors_vel_cur", RobotState.motors_vel_cur);
+                logger.recItermData("rpy", RobotState.rpy);
+                logger.recItermData("fL", RobotState.fL);
+                logger.recItermData("fR", RobotState.fR);
+                logger.recItermData("basePos", RobotState.basePos);
+                logger.recItermData("baseLinVel", RobotState.baseLinVel);
+                logger.recItermData("baseAcc", RobotState.baseAcc);
+                logger.recItermData("baseAngVel", RobotState.baseAngVel);
+                logger.finishLine();
+
+                last_log_time = simTime; // Update last log time
+            }
 
             // printf("rpyVal=[%.5f, %.5f, %.5f]\n", RobotState.rpy[0], RobotState.rpy[1], RobotState.rpy[2]);
             // printf("gps=[%.5f, %.5f, %.5f]\n", RobotState.basePos[0], RobotState.basePos[1], RobotState.basePos[2]);

@@ -109,8 +109,8 @@ int main(int argc, const char **argv)
             {
                 const double dt = 0.001;
 
-                fe_l_pos_L_des(2) = Ramp(fe_l_pos_L_des(2), -stand_legLength * 0.75, dt * 0.5); // 0.5
-                fe_r_pos_L_des(2) = Ramp(fe_r_pos_L_des(2), -stand_legLength * 0.75, dt * 0.5);
+                fe_l_pos_L_des(2) = Ramp(fe_l_pos_L_des(2), -stand_legLength * 0.75, 0.1 * dt); // 0.5
+                fe_r_pos_L_des(2) = Ramp(fe_r_pos_L_des(2), -stand_legLength * 0.75, 0.1 * dt);
 
                 fe_l_eul_L_des = {-0.0, -0.0, -0.0};
                 fe_r_eul_L_des = {0.0, -0.0, 0.0};
@@ -131,7 +131,6 @@ int main(int argc, const char **argv)
             }
             else
                 jsInterp.setIniPos(RobotState.q(0), RobotState.q(1), RobotState.base_rpy(2));
-
 
             // ------------- WBC ------------
             // WBC input
