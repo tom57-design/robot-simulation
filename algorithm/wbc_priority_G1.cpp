@@ -52,7 +52,7 @@ WBC_priority_G1::WBC_priority_G1(int model_nv_In, int QP_nvIn, int QP_ncIn, doub
 
     delta_q_final_kin = Eigen::VectorXd::Zero(model_nv);
     dq_final_kin = Eigen::VectorXd::Zero(model_nv);
-    ;
+
     ddq_final_kin = Eigen::VectorXd::Zero(model_nv);
 
     base_rpy_cur = Eigen::VectorXd::Zero(3);

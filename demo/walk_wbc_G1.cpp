@@ -85,6 +85,7 @@ int main(int argc, const char **argv)
     logger.addIterm("simTime", 1);
     logger.addIterm("motors_pos_cur", model_nv - 6);
     logger.addIterm("motors_vel_cur", model_nv - 6);
+    logger.addIterm("motors_tor_cur", model_nv - 6);
     logger.addIterm("rpy", 3);
     logger.addIterm("fL", 3);
     logger.addIterm("fR", 3);
@@ -182,16 +183,16 @@ int main(int argc, const char **argv)
                 0, 0, 370, 0, 0, 0;
 
             // adjust des_delata_q, des_dq and des_ddq to achieve forward walking
-            if (simTime > startWalkingTime + 0.4)
+            if (simTime > startWalkingTime + 0.4 / 2)
             {
                 // std::cout << "Started Forward Walking!!!" << std::endl;
 
-                RobotState.des_delta_q.block<2, 1>(0, 0) << jsInterp.vx_W * mj_model->opt.timestep, jsInterp.vy_W * mj_model->opt.timestep;
-                RobotState.des_delta_q(5) = jsInterp.wz_L * mj_model->opt.timestep;
-                RobotState.des_dq.block<2, 1>(0, 0) << jsInterp.vx_W, jsInterp.vy_W;
+                RobotState.des_delta_q.block<2, 1>(0, 0) << 3 * jsInterp.vx_W * mj_model->opt.timestep, 3 * jsInterp.vy_W * mj_model->opt.timestep;
+                RobotState.des_delta_q(5) = 3 * jsInterp.wz_L * mj_model->opt.timestep;
+                RobotState.des_dq.block<2, 1>(0, 0) << 3 * jsInterp.vx_W, 3 * jsInterp.vy_W;
                 RobotState.des_dq(5) = jsInterp.wz_L;
 
-                double k = 5;
+                double k = 5 * 3;
                 RobotState.des_ddq.block<2, 1>(0, 0) << k * (jsInterp.vx_W - RobotState.dq(0)), k * (jsInterp.vy_W -
                                                                                                      RobotState.dq(1));
                 RobotState.des_ddq(5) = k * (jsInterp.wz_L - RobotState.dq(5));
@@ -250,6 +251,7 @@ int main(int argc, const char **argv)
                 logger.recItermData("simTime", simTime);
                 logger.recItermData("motors_pos_cur", RobotState.motors_pos_cur);
                 logger.recItermData("motors_vel_cur", RobotState.motors_vel_cur);
+                logger.recItermData("motors_tor_cur", RobotState.motors_tor_cur);
                 logger.recItermData("rpy", RobotState.rpy);
                 logger.recItermData("fL", RobotState.fL);
                 logger.recItermData("fR", RobotState.fR);
