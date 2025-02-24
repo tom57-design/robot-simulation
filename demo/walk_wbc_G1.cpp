@@ -187,12 +187,12 @@ int main(int argc, const char **argv)
             {
                 // std::cout << "Started Forward Walking!!!" << std::endl;
 
-                RobotState.des_delta_q.block<2, 1>(0, 0) << 3 * jsInterp.vx_W * mj_model->opt.timestep, 3 * jsInterp.vy_W * mj_model->opt.timestep;
-                RobotState.des_delta_q(5) = 3 * jsInterp.wz_L * mj_model->opt.timestep;
-                RobotState.des_dq.block<2, 1>(0, 0) << 3 * jsInterp.vx_W, 3 * jsInterp.vy_W;
+                RobotState.des_delta_q.block<2, 1>(0, 0) << 2.5 * jsInterp.vx_W * mj_model->opt.timestep, jsInterp.vy_W * mj_model->opt.timestep;
+                RobotState.des_delta_q(5) = jsInterp.wz_L * mj_model->opt.timestep;
+                RobotState.des_dq.block<2, 1>(0, 0) << 2.5 * jsInterp.vx_W, jsInterp.vy_W;
                 RobotState.des_dq(5) = jsInterp.wz_L;
 
-                double k = 5 * 3;
+                double k = 5 * 2.5;
                 RobotState.des_ddq.block<2, 1>(0, 0) << k * (jsInterp.vx_W - RobotState.dq(0)), k * (jsInterp.vy_W -
                                                                                                      RobotState.dq(1));
                 RobotState.des_ddq(5) = k * (jsInterp.wz_L - RobotState.dq(5));
@@ -267,6 +267,43 @@ int main(int argc, const char **argv)
             // printf("rpyVal=[%.5f, %.5f, %.5f]\n", RobotState.rpy[0], RobotState.rpy[1], RobotState.rpy[2]);
             // printf("gps=[%.5f, %.5f, %.5f]\n", RobotState.basePos[0], RobotState.basePos[1], RobotState.basePos[2]);
             // printf("vel=[%.5f, %.5f, %.5f]\n", RobotState.baseLinVel[0], RobotState.baseLinVel[1], RobotState.baseLinVel[2]);
+
+            //**** VISUALIZING PLANNED FOOT STEPS ****//
+            Eigen::Vector3d swingPos = RobotState.swing_fe_pos_des_W; // Current swing foot position
+
+            // Persistent storage for last known swing foot position
+            static Eigen::Vector3d lastSwingPos_left(0, 0, 0);
+            static Eigen::Vector3d lastSwingPos_right(0, 0, 0);
+
+            int left_site_id = mj_name2id(mj_model, mjOBJ_SITE, "left_step_plan");
+            int right_site_id = mj_name2id(mj_model, mjOBJ_SITE, "right_step_plan");
+
+            // Update the site for the swing foot
+            if (RobotState.legState == DataBus::LSt && right_site_id >= 0)
+            { // Left stance, right swing
+                mj_data->site_xpos[right_site_id * 3] = swingPos.x();
+                mj_data->site_xpos[right_site_id * 3 + 1] = swingPos.y();
+                mj_data->site_xpos[right_site_id * 3 + 2] = swingPos.z();
+
+                mj_data->site_xpos[left_site_id * 3] = lastSwingPos_left.x();
+                mj_data->site_xpos[left_site_id * 3 + 1] = lastSwingPos_left.y();
+                mj_data->site_xpos[left_site_id * 3 + 2] = lastSwingPos_left.z();
+
+                lastSwingPos_right = swingPos;
+            }
+            else if (RobotState.legState == DataBus::RSt && left_site_id >= 0)
+            { // Right stance, left swing
+                mj_data->site_xpos[left_site_id * 3] = swingPos.x();
+                mj_data->site_xpos[left_site_id * 3 + 1] = swingPos.y();
+                mj_data->site_xpos[left_site_id * 3 + 2] = swingPos.z();
+
+                mj_data->site_xpos[right_site_id * 3] = lastSwingPos_right.x();
+                mj_data->site_xpos[right_site_id * 3 + 1] = lastSwingPos_right.y();
+                mj_data->site_xpos[right_site_id * 3 + 2] = lastSwingPos_right.z();
+
+                lastSwingPos_left = swingPos;
+            }
+            //**** END OF VISUALIZING PLANNED FOOT STEPS ****//
         }
 
         if (mj_data->time >= simEndTime)

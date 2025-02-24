@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 log_file_path = "datalog.log"  # Update with the actual path
 
 # Specify the headers to plot (update as needed)
-headers_to_plot = ["simTime_0", "basePos_0", "basePos_1", "basePos_2", "motors_pos_cur_0", "motors_vel_cur_0", "motors_tor_cur_0"]
+headers_to_plot = ["simTime_0", "basePos_0", "basePos_1", "basePos_2", "motors_pos_cur_0", "motors_vel_cur_0", "motors_tor_cur_0", "motors_tor_cur_3", "motors_tor_cur_4"]
 
 # Load the log file
 try:

@@ -276,5 +276,10 @@
   <worldbody>
     <light pos="1 0 3.5" dir="0 0 -1" directional="true"/>
     <geom name="floor" size="0 0 0.05" type="plane" material="groundplane"/>
+
+    <!-- Sites for step locations -->
+    <site name="left_step_plan" pos="0 0 0" size="0.03" rgba="0 1 0 1" type="sphere"/>
+    <site name="right_step_plan" pos="0 0 0" size="0.03" rgba="1 0 0 1" type="sphere"/>
+    
   </worldbody>
 </mujoco>
