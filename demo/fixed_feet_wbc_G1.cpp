@@ -99,6 +99,7 @@ int main(int argc, const char **argv)
     mjtNum simstart = mj_data->time;
     double simTime = mj_data->time;
     double startSquatingTime = 0.5;
+    double startLiftingTime = 4.0;
 
     // init UI: GLFW
     uiController.iniGLFW();
@@ -126,12 +127,36 @@ int main(int argc, const char **argv)
             kinDynSolver.computeDyn();
             kinDynSolver.dataBusWrite(RobotState);
 
-            if (simTime > startSquatingTime)
+            if (simTime > startSquatingTime && simTime <= startLiftingTime)
             {
                 const double dt = 0.001;
 
                 fe_l_pos_L_des(2) = Ramp(fe_l_pos_L_des(2), -stand_legLength * 0.75, 0.1 * dt); // 0.5
                 fe_r_pos_L_des(2) = Ramp(fe_r_pos_L_des(2), -stand_legLength * 0.75, 0.1 * dt);
+
+                fe_l_eul_L_des = {-0.0, -0.0, -0.0};
+                fe_r_eul_L_des = {0.0, -0.0, 0.0};
+
+                fe_l_rot_des = eul2Rot(fe_l_eul_L_des(0), fe_l_eul_L_des(1), fe_l_eul_L_des(2));
+                fe_r_rot_des = eul2Rot(fe_r_eul_L_des(0), fe_r_eul_L_des(1), fe_r_eul_L_des(2));
+
+                auto resLeg = kinDynSolver.computeInK_Leg(fe_l_rot_des, fe_l_pos_L_des, fe_r_rot_des, fe_r_pos_L_des);
+                auto resHand = kinDynSolver.computeInK_Hand(hd_l_rot_des, hd_l_pos_L_des, hd_r_rot_des, hd_r_pos_L_des);
+
+                RobotState.base_pos_stand = RobotState.base_pos;
+
+                RobotState.motors_pos_des = eigen2std(resLeg.jointPosRes + resHand.jointPosRes);
+                RobotState.motors_vel_des.assign(model_nv - 6, 0);
+                RobotState.motors_tor_des.assign(model_nv - 6, 0);
+
+                RobotState.motionState = DataBus::Stand;
+            }
+            else if (simTime > startLiftingTime)
+            {
+                const double dt = 0.001;
+
+                fe_l_pos_L_des(2) = Ramp(fe_l_pos_L_des(2), -stand_legLength, 0.2 * dt); // 0.5
+                fe_r_pos_L_des(2) = Ramp(fe_r_pos_L_des(2), -stand_legLength, 0.2 * dt);
 
                 fe_l_eul_L_des = {-0.0, -0.0, -0.0};
                 fe_r_eul_L_des = {0.0, -0.0, 0.0};
