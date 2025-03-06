@@ -266,10 +266,10 @@
     <connect body1="left_ankle_roll_link" body2="world" anchor="-1 0 0"/>
     <connect body1="left_ankle_roll_link" body2="world" anchor="0 -1 0"/>
 
-    <connect body1="right_ankle_roll_link" body2="world" anchor="1 0 0"/>
+    <!-- <connect body1="right_ankle_roll_link" body2="world" anchor="1 0 0"/>
     <connect body1="right_ankle_roll_link" body2="world" anchor="0 1 0"/>
     <connect body1="right_ankle_roll_link" body2="world" anchor="-1 0 0"/>
-    <connect body1="right_ankle_roll_link" body2="world" anchor="0 -1 0"/>
+    <connect body1="right_ankle_roll_link" body2="world" anchor="0 -1 0"/> -->
   </equality>
 
 

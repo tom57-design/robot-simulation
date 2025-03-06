@@ -9,8 +9,10 @@
 #include "pino_kin_dyn_G1.h"
 #include "data_logger.h"
 #include "wbc_priority_G1.h"
-#include "gait_scheduler.h"
-#include "foot_placement.h"
+// #include "gait_scheduler.h"
+// #include "foot_placement.h"
+#include "gait_scheduler_G1.h"
+#include "foot_placement_G1.h"
 #include "joystick_interpreter.h"
 
 // MuJoCo load and compile model
@@ -28,16 +30,16 @@ int main(int argc, const char **argv)
     Pin_KinDyn_G1 kinDynSolver("../models/unitree_g1/g1_23dof.urdf");                         // kinematics and dynamics solver
     DataBus RobotState(kinDynSolver.model_nv);                                                // data bus
     WBC_priority_G1 WBC_solv(kinDynSolver.model_nv, 6 + 12, 22, 0.7, mj_model->opt.timestep); // WBC solver
-    GaitScheduler gaitScheduler(0.4, mj_model->opt.timestep);                                 // gait scheduler
+    GaitScheduler_G1 gaitScheduler(0.4, mj_model->opt.timestep);                              // gait scheduler
     PVT_Ctr_G1 pvtCtr(mj_model->opt.timestep, "../common/joint_ctrl_config_G1.json");         // PVT joint control
-    FootPlacement footPlacement;                                                              // foot-placement planner
-    JoyStickInterpreter jsInterp(mj_model->opt.timestep);                                     // desired baselink velocity generator
-    DataLogger logger("../record/datalog.log");                                               // data logger
+    FootPlacement_G1 footPlacement;
+    JoyStickInterpreter jsInterp(mj_model->opt.timestep); // desired baselink velocity generator
+    DataLogger logger("../record/datalog.log");           // data logger
 
     // variables ini
     double stand_legLength = 0.69; // desired baselink height
     double foot_height = 0.07;     // distance between the foot ankel joint and the bottom
-    double xv_des = 1.2;           // desired velocity in x direction
+    double xv_des = 1.2 * 0.4;           // desired velocity in x direction
 
     RobotState.width_hips = 0.229;
 
@@ -45,7 +47,7 @@ int main(int argc, const char **argv)
     footPlacement.kp_vx = 50 * 0.03;
     footPlacement.kp_vy = 10 * 0.035;
     footPlacement.kp_wz = 0.03;
-    footPlacement.stepHeight = 0.25 / 2;
+    footPlacement.stepHeight = 0.25 / 2 * 0.8;
     footPlacement.legLength = stand_legLength;
     // mju_copy(mj_data->qpos, mj_model->key_qpos, mj_model->nq*1); // set ini pos in Mujoco
     int model_nv = kinDynSolver.model_nv;
@@ -187,9 +189,9 @@ int main(int argc, const char **argv)
             {
                 // std::cout << "Started Forward Walking!!!" << std::endl;
 
-                RobotState.des_delta_q.block<2, 1>(0, 0) << 2.5 * jsInterp.vx_W * mj_model->opt.timestep, jsInterp.vy_W * mj_model->opt.timestep;
+                RobotState.des_delta_q.block<2, 1>(0, 0) << jsInterp.vx_W * mj_model->opt.timestep, jsInterp.vy_W * mj_model->opt.timestep;
                 RobotState.des_delta_q(5) = jsInterp.wz_L * mj_model->opt.timestep;
-                RobotState.des_dq.block<2, 1>(0, 0) << 2.5 * jsInterp.vx_W, jsInterp.vy_W;
+                RobotState.des_dq.block<2, 1>(0, 0) << jsInterp.vx_W, jsInterp.vy_W;
                 RobotState.des_dq(5) = jsInterp.wz_L;
 
                 double k = 5 * 2.5;
@@ -217,6 +219,7 @@ int main(int argc, const char **argv)
             }
             else
             {
+                //**** Comment out this section to make the robot stand still & debug for foot placement ****//
                 Eigen::VectorXd pos_des = kinDynSolver.integrateDIY(RobotState.q, RobotState.wbc_delta_q_final);
                 RobotState.motors_pos_des = eigen2std(pos_des.block(7, 0, model_nv - 6, 1));
                 RobotState.motors_vel_des = eigen2std(RobotState.wbc_dq_final);
@@ -224,21 +227,23 @@ int main(int argc, const char **argv)
             }
 
             pvtCtr.dataBusRead(RobotState);
-            if (simTime <= 3)
+            if (simTime <= startWalkingTime) // This timing is critical
             {
                 pvtCtr.calMotorsPVT(100.0 / 1000.0 / 180.0 * 3.1415);
             }
             else
             {
                 //**** For G1-23DOF ****//
-                pvtCtr.setJointPD(800, 10, "left_ankle_pitch_joint");
-                pvtCtr.setJointPD(100, 10, "left_ankle_roll_joint");
-                pvtCtr.setJointPD(800, 10, "right_ankle_pitch_joint");
-                pvtCtr.setJointPD(100, 10, "right_ankle_roll_joint");
+                // Also comment out this section if we want to make it stand still
+                pvtCtr.setJointPD(100, 5, "left_ankle_pitch_joint");
+                pvtCtr.setJointPD(40, 10, "left_ankle_roll_joint");
+                pvtCtr.setJointPD(100, 5, "right_ankle_pitch_joint");
+                pvtCtr.setJointPD(40, 10, "right_ankle_roll_joint");
                 pvtCtr.setJointPD(1600, 100, "left_knee_joint");
                 pvtCtr.setJointPD(1600, 100, "right_knee_joint");
 
-                pvtCtr.calMotorsPVT();
+                // pvtCtr.calMotorsPVT();
+                pvtCtr.calMotorsPVT(0.5 / 180.0 * 3.1415); // This limit is critical
             }
             pvtCtr.dataBusWrite(RobotState);
 
@@ -278,6 +283,8 @@ int main(int argc, const char **argv)
             int left_site_id = mj_name2id(mj_model, mjOBJ_SITE, "left_step_plan");
             int right_site_id = mj_name2id(mj_model, mjOBJ_SITE, "right_step_plan");
 
+            int base_des_site_id = mj_name2id(mj_model, mjOBJ_SITE, "base_pos_des");
+
             // Update the site for the swing foot
             if (RobotState.legState == DataBus::LSt && right_site_id >= 0)
             { // Left stance, right swing
@@ -303,6 +310,14 @@ int main(int argc, const char **argv)
 
                 lastSwingPos_left = swingPos;
             }
+
+            // if (base_des_site_id >= 0)
+            // {
+            //     mj_data->site_xpos[base_des_site_id * 3] = RobotState.swingDesPosFinal_W(0);
+            //     mj_data->site_xpos[base_des_site_id * 3 + 1] = RobotState.swingDesPosFinal_W(1);
+            //     mj_data->site_xpos[base_des_site_id * 3 + 2] = RobotState.swingDesPosFinal_W(2);
+            // }
+
             //**** END OF VISUALIZING PLANNED FOOT STEPS ****//
         }
 

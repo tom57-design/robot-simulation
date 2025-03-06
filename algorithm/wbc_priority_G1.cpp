@@ -419,7 +419,7 @@ void WBC_priority_G1::computeDdq(Pin_KinDyn_G1 &pinKinDynIn)
         kin_tasks_walk.taskLib[id].dJ = dJc.block(0, 0, 3, model_nv);
         //            kin_tasks_walk.taskLib[id].dJ.block(0,22,3,3).setZero();
 
-        // //// static_contact CORRECTION ////
+        //// static_contact CORRECTION ////
         // kin_tasks_walk.taskLib[id].errX = Eigen::VectorXd::Zero(6);
         // kin_tasks_walk.taskLib[id].derrX = Eigen::VectorXd::Zero(6);
         // kin_tasks_walk.taskLib[id].ddxDes = Eigen::VectorXd::Zero(6);
@@ -428,7 +428,7 @@ void WBC_priority_G1::computeDdq(Pin_KinDyn_G1 &pinKinDynIn)
         // kin_tasks_walk.taskLib[id].kd = Eigen::MatrixXd::Identity(6, 6) * 0;
         // kin_tasks_walk.taskLib[id].J = Jc;
         // kin_tasks_walk.taskLib[id].dJ = dJc;
-        // //// END OF static_contact CORRECTION ////
+        //// END OF static_contact CORRECTION ////
 
         kin_tasks_walk.taskLib[id].W.diagonal() = Eigen::VectorXd::Ones(model_nv);
 
@@ -534,8 +534,8 @@ void WBC_priority_G1::computeDdq(Pin_KinDyn_G1 &pinKinDynIn)
         //     kin_tasks_walk.taskLib[id].errX(0) = 0.06 * sign(kin_tasks_walk.taskLib[id].errX(0));
         if (fabs(kin_tasks_walk.taskLib[id].errX(1)) >= 0.04)
             kin_tasks_walk.taskLib[id].errX(1) = 0.04 * sign(kin_tasks_walk.taskLib[id].errX(1));
-        if (fabs(kin_tasks_walk.taskLib[id].errX(2)) >= 0.002)
-            kin_tasks_walk.taskLib[id].errX(2) = 0.002 * sign(kin_tasks_walk.taskLib[id].errX(2));
+        if (fabs(kin_tasks_walk.taskLib[id].errX(2)) >= 0.0025)
+            kin_tasks_walk.taskLib[id].errX(2) = 0.0025 * sign(kin_tasks_walk.taskLib[id].errX(2));
         desRot = eul2Rot(base_rpy_des(0), base_rpy_des(1), base_rpy_des(2));
         kin_tasks_walk.taskLib[id].errX.block<3, 1>(3, 0) = diffRot(base_rot, desRot);
         kin_tasks_walk.taskLib[id].derrX = Eigen::VectorXd::Zero(6);
