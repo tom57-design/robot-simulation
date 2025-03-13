@@ -39,7 +39,7 @@ int main(int argc, const char **argv)
     // variables ini
     double stand_legLength = 0.69; // desired baselink height
     double foot_height = 0.07;     // distance between the foot ankel joint and the bottom
-    double xv_des = 1.2 * 0.4;           // desired velocity in x direction
+    double xv_des = 1.2 * 0.4;     // desired velocity in x direction
 
     RobotState.width_hips = 0.229;
 
@@ -243,7 +243,7 @@ int main(int argc, const char **argv)
                 pvtCtr.setJointPD(1600, 100, "right_knee_joint");
 
                 // pvtCtr.calMotorsPVT();
-                pvtCtr.calMotorsPVT(0.5 / 180.0 * 3.1415); // This limit is critical
+                pvtCtr.calMotorsPVT(2 * 0.5 / 180.0 * 3.1415); // This limit is critical
             }
             pvtCtr.dataBusWrite(RobotState);
 
