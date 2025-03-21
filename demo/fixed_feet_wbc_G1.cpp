@@ -99,8 +99,9 @@ int main(int argc, const char **argv)
     mjtNum simstart = mj_data->time;
     double simTime = mj_data->time;
     double startSquatingTime = 0.5;
-    double startLiftingTime = 3.5;
-    double startBalancingTime = 5.0;
+    double startStandingTime = 3.5;
+    double startBalancingTime = 5.5;
+    double startStandingAgainTime = 8.0;
 
     // init UI: GLFW
     uiController.iniGLFW();
@@ -128,7 +129,7 @@ int main(int argc, const char **argv)
             kinDynSolver.computeDyn();
             kinDynSolver.dataBusWrite(RobotState);
 
-            if (simTime > startSquatingTime && simTime <= startLiftingTime)
+            if (simTime > startSquatingTime && simTime <= startStandingTime)
             {
                 const double dt = 0.001;
 
@@ -152,7 +153,7 @@ int main(int argc, const char **argv)
 
                 RobotState.motionState = DataBus::Stand;
             }
-            else if (simTime > startLiftingTime && simTime <= startBalancingTime)
+            else if (simTime > startStandingTime && simTime <= startBalancingTime)
             {
                 const double dt = 0.001;
 
@@ -176,29 +177,25 @@ int main(int argc, const char **argv)
 
                 RobotState.motionState = DataBus::Stand;
             }
-            else if (simTime > startBalancingTime)
+            else if (simTime > startBalancingTime && simTime <= startStandingAgainTime)
             {
                 const double dt = 0.001;
 
-                fe_r_pos_L_des(2) = Ramp(fe_r_pos_L_des(2), -0.45, 0.2 * dt); // {0.04, 0.18, -0.45}; // Lift one leg
-                fe_l_pos_L_des(1) = Ramp(fe_l_pos_L_des(1), 0.4, 0.2 * dt);  // Adjust the fixed leg's position
+                RobotState.base_pos_stand = RobotState.base_pos;
+                RobotState.base_pos_des(2) = Ramp(RobotState.base_pos(2), stand_legLength * 0.8, 5 * dt);
 
-                double fixed_leg_roll = -90 / 180 * 3.14;
-                fe_l_eul_L_des(0) = Ramp(fe_l_eul_L_des(0), fixed_leg_roll, 0.2 * dt);
+                RobotState.motors_vel_des.assign(model_nv - 6, 0);
+                RobotState.motors_tor_des.assign(model_nv - 6, 0);
 
-                fe_l_rot_des = eul2Rot(fe_l_eul_L_des(0), fe_l_eul_L_des(1), fe_l_eul_L_des(2));
-                fe_r_rot_des = eul2Rot(fe_r_eul_L_des(0), fe_r_eul_L_des(1), fe_r_eul_L_des(2));
-
-                auto resLeg = kinDynSolver.computeInK_Leg(fe_l_rot_des, fe_l_pos_L_des, fe_r_rot_des, fe_r_pos_L_des);
-                auto resHand = kinDynSolver.computeInK_Hand(hd_l_rot_des, hd_l_pos_L_des, hd_r_rot_des, hd_r_pos_L_des);
-
-                qIniDes.block(7, 0, mj_model->nq - 7, 1) = resLeg.jointPosRes + resHand.jointPosRes;
-                WBC_solv.setQini(qIniDes, RobotState.q);
+                RobotState.motionState = DataBus::Stand;
+            }
+            else if (simTime > startStandingAgainTime)
+            {
+                const double dt = 0.001;
 
                 RobotState.base_pos_stand = RobotState.base_pos;
-                RobotState.base_rpy_des << -fixed_leg_roll, 0, 0;
+                RobotState.base_pos_des(2) = Ramp(RobotState.base_pos(2), stand_legLength, 50 * dt);
 
-                RobotState.motors_pos_des = eigen2std(resLeg.jointPosRes + resHand.jointPosRes);
                 RobotState.motors_vel_des.assign(model_nv - 6, 0);
                 RobotState.motors_tor_des.assign(model_nv - 6, 0);
 
@@ -235,15 +232,14 @@ int main(int argc, const char **argv)
             }
             else
             {
-                //**** For G1-23DOF ****//
-                pvtCtr.setJointPD(800, 10, "left_ankle_pitch_joint");
-                pvtCtr.setJointPD(400, 10, "left_ankle_roll_joint");
-                pvtCtr.setJointPD(800, 10, "right_ankle_pitch_joint");
-                pvtCtr.setJointPD(400, 10, "right_ankle_roll_joint");
-                pvtCtr.setJointPD(1600, 100, "left_knee_joint");
-                pvtCtr.setJointPD(1600, 100, "right_knee_joint");
+                //**** Comment out this section to make the robot stand still & debug for foot placement ****//
+                Eigen::VectorXd pos_des = kinDynSolver.integrateDIY(RobotState.q, RobotState.wbc_delta_q_final);
+                RobotState.motors_pos_des = eigen2std(pos_des.block(7, 0, model_nv - 6, 1));
+                RobotState.motors_vel_des = eigen2std(RobotState.wbc_dq_final);
+                RobotState.motors_tor_des = eigen2std(RobotState.wbc_tauJointRes);
 
-                pvtCtr.calMotorsPVT();
+                pvtCtr.calMotorsPVT(0.1 / 180.0 * 3.1415);
+                // pvtCtr.calMotorsPVT();
             }
             pvtCtr.dataBusWrite(RobotState);
 
