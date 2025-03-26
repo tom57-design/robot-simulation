@@ -98,10 +98,10 @@ int main(int argc, const char **argv)
     double simEndTime = 30;
     mjtNum simstart = mj_data->time;
     double simTime = mj_data->time;
-    double startSquatingTime = 0.5;
-    double startStandingTime = 3.5;
-    double startBalancingTime = 5.5;
-    double startStandingAgainTime = 8.0;
+    double startSquatingTime_1 = 0.5;
+    double startStandingTime_1 = 3.5;
+    double startSquatingTime_2 = 5.5;
+    double startStandingTime_2 = 8.0;
 
     // init UI: GLFW
     uiController.iniGLFW();
@@ -129,7 +129,7 @@ int main(int argc, const char **argv)
             kinDynSolver.computeDyn();
             kinDynSolver.dataBusWrite(RobotState);
 
-            if (simTime > startSquatingTime && simTime <= startStandingTime)
+            if (simTime > startSquatingTime_1 && simTime <= startStandingTime_1)
             {
                 const double dt = 0.001;
 
@@ -153,7 +153,7 @@ int main(int argc, const char **argv)
 
                 RobotState.motionState = DataBus::Stand;
             }
-            else if (simTime > startStandingTime && simTime <= startBalancingTime)
+            else if (simTime > startStandingTime_1 && simTime <= startSquatingTime_2)
             {
                 const double dt = 0.001;
 
@@ -177,7 +177,7 @@ int main(int argc, const char **argv)
 
                 RobotState.motionState = DataBus::Stand;
             }
-            else if (simTime > startBalancingTime && simTime <= startStandingAgainTime)
+            else if (simTime > startSquatingTime_2 && simTime <= startStandingTime_2)
             {
                 const double dt = 0.001;
 
@@ -189,7 +189,7 @@ int main(int argc, const char **argv)
 
                 RobotState.motionState = DataBus::Stand;
             }
-            else if (simTime > startStandingAgainTime)
+            else if (simTime > startStandingTime_2)
             {
                 const double dt = 0.001;
 
@@ -210,11 +210,6 @@ int main(int argc, const char **argv)
             RobotState.des_ddq = Eigen::VectorXd::Zero(mj_model->nv);
             RobotState.des_dq = Eigen::VectorXd::Zero(mj_model->nv);
             RobotState.des_delta_q = Eigen::VectorXd::Zero(mj_model->nv);
-            // RobotState.base_rpy_des << 0, 0, jsInterp.thetaZ;
-            // RobotState.base_pos_des(2) = stand_legLength + foot_height;
-
-            // RobotState.Fr_ff << 0, 0, 370, 0, 0, 0,
-            //     0, 0, 370, 0, 0, 0;
 
             // WBC Calculation
             WBC_solv.dataBusRead(RobotState);
@@ -226,7 +221,7 @@ int main(int argc, const char **argv)
             WBC_solv.dataBusWrite(RobotState);
 
             pvtCtr.dataBusRead(RobotState);
-            if (simTime <= startSquatingTime)
+            if (simTime <= startSquatingTime_1)
             {
                 pvtCtr.calMotorsPVT(100.0 / 1000.0 / 180.0 * 3.1415);
             }
