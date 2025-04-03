@@ -58,7 +58,7 @@ public:
     double r_shoulder_pitch = 0; //q(34) - qIniDes(34);
     Eigen::Vector3d pCoMDes, pCoMCur;
 
-    PriorityTasks kin_tasks_walk, kin_tasks_stand;
+    PriorityTasks kin_tasks_walk, kin_tasks_stand, kin_tasks_stand_one_leg;
     void setQini(const Eigen::VectorXd &qIniDes, const Eigen::VectorXd &qIniCur);
     void computeTau();
     void dataBusRead(const DataBus &robotState);

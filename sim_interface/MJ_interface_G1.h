@@ -8,7 +8,7 @@ Feel free to use in any purpose, and cite OpenLoong-Dynamics-Control in any styl
 #pragma once
 
 #include <mujoco/mujoco.h>
-#include "data_bus_G1.h"
+#include "data_bus.h"
 #include <string>
 #include <vector>
 

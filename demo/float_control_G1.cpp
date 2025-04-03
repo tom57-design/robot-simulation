@@ -106,12 +106,6 @@ int main(int argc, const char **argv)
             mj_interface.updateSensorValues();
             mj_interface.dataBusWrite(RobotState);
 
-            // inverse kinematics
-            // fe_l_pos_L_des << -0.018, 0.0937, -stand_legLength;
-            // fe_r_pos_L_des << -0.018, -0.0952, -stand_legLength;
-            // fe_l_eul_L_des << -0.000, -0.00, -0.000;
-            // fe_r_eul_L_des << 0.000, -0.00, 0.000;
-
             Eigen::Vector3d fe_l_pos_L_des = {0.04, 0.18, -0.72};     // Tuned
             Eigen::Vector3d fe_r_pos_L_des = {0.04, -0.18, -0.72};    // Tuned
             Eigen::Vector3d fe_l_eul_L_des = {-0.000, -0.15, -0.000}; // Tuned
@@ -119,11 +113,6 @@ int main(int argc, const char **argv)
 
             fe_l_rot_des = eul2Rot(fe_l_eul_L_des(0), fe_l_eul_L_des(1), fe_l_eul_L_des(2)); // roll, pitch, yaw
             fe_r_rot_des = eul2Rot(fe_r_eul_L_des(0), fe_r_eul_L_des(1), fe_r_eul_L_des(2));
-
-            // hd_l_pos_L_des = {-0.02, 0.32, -0.159};
-            // hd_r_pos_L_des = {-0.02, -0.32, -0.159};
-            // hd_l_eul_L_des = {-1.253, 0.122, -1.732};
-            // hd_r_eul_L_des = {1.253, 0.122, 1.732};
 
             Eigen::Vector3d hd_l_pos_L_des = {-0.0, 0.2, 0.03};  // Tuned
             Eigen::Vector3d hd_r_pos_L_des = {-0.0, -0.2, 0.03}; // Tuned

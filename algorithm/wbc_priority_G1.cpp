@@ -110,6 +110,19 @@ WBC_priority_G1::WBC_priority_G1(int model_nv_In, int QP_nvIn, int QP_ncIn, doub
     // taskOrder_stand.emplace_back("HeadRP");
 
     kin_tasks_stand.buildPriority(taskOrder_stand);
+
+    ///-------- Single Leg Balance ------------
+    kin_tasks_stand_one_leg.addTask("static_Contact");
+    kin_tasks_stand_one_leg.addTask("Pz");
+    kin_tasks_stand_one_leg.addTask("CoMXY_HipRPY");
+
+    std::vector<std::string> taskOrder_stand_one_leg;
+
+    taskOrder_stand_one_leg.emplace_back("Pz");
+    taskOrder_stand_one_leg.emplace_back("CoMXY_HipRPY");
+    taskOrder_stand_one_leg.emplace_back("static_Contact");
+
+    kin_tasks_stand_one_leg.buildPriority(taskOrder_stand_one_leg);
 }
 
 void WBC_priority_G1::dataBusRead(const DataBus &robotState)
@@ -823,7 +836,7 @@ void WBC_priority_G1::computeDdq(Pin_KinDyn_G1 &pinKinDynIn)
         kin_tasks_stand.taskLib[id].dJ = taskMap * dJ_base;
 
         // kin_tasks_stand.taskLib[id].dJ.block(0, 22, 1, 3).setZero();
-        kin_tasks_stand.taskLib[id].J.block(0, 18, 1, 1).setZero(); // exclude waist joint
+        kin_tasks_stand.taskLib[id].dJ.block(0, 18, 1, 1).setZero(); // exclude waist joint
 
         kin_tasks_stand.taskLib[id].W.diagonal() = Eigen::VectorXd::Ones(model_nv);
 
@@ -1019,6 +1032,81 @@ void WBC_priority_G1::computeDdq(Pin_KinDyn_G1 &pinKinDynIn)
         // std::cout << "Ended fixedWaist!" << std::endl;
     }
 
+    /// -------- stand on one leg -------------
+    {
+        int id = kin_tasks_stand_one_leg.getId("static_Contact");
+        kin_tasks_stand_one_leg.taskLib[id].errX = Eigen::VectorXd::Zero(12);
+        kin_tasks_stand_one_leg.taskLib[id].derrX = Eigen::VectorXd::Zero(12);
+        kin_tasks_stand_one_leg.taskLib[id].ddxDes = Eigen::VectorXd::Zero(12);
+        kin_tasks_stand_one_leg.taskLib[id].dxDes = Eigen::VectorXd::Zero(12);
+        kin_tasks_stand_one_leg.taskLib[id].kp = Eigen::MatrixXd::Identity(12, 12) * 0;
+        kin_tasks_stand_one_leg.taskLib[id].kd = Eigen::MatrixXd::Identity(12, 12) * 0;
+        kin_tasks_stand_one_leg.taskLib[id].J = Eigen::MatrixXd::Zero(12, model_nv);
+        Eigen::MatrixXd taskCtMap = Eigen::MatrixXd::Zero(3, 3);
+        taskCtMap(0, 0) = 0;
+        taskCtMap(1, 1) = 1;
+        taskCtMap(2, 2) = 1;
+        taskCtMap = fe_l_rot_cur_W * taskCtMap * fe_l_rot_cur_W.transpose(); // disable ankle roll joint
+        kin_tasks_stand_one_leg.taskLib[id].J = Jfe;
+        kin_tasks_stand_one_leg.taskLib[id].J.block(3, 0, 3, model_nv) = taskCtMap * kin_tasks_stand_one_leg.taskLib[id].J.block(3, 0, 3, model_nv);
+        kin_tasks_stand_one_leg.taskLib[id].J.block(9, 0, 3, model_nv) = taskCtMap * kin_tasks_stand_one_leg.taskLib[id].J.block(9, 0, 3, model_nv);
+
+        kin_tasks_stand_one_leg.taskLib[id].J.block(0, 18, 12, 1).setZero(); // exculde waist joints
+
+        kin_tasks_stand_one_leg.taskLib[id].dJ = Eigen::MatrixXd::Zero(12, model_nv);
+        kin_tasks_stand_one_leg.taskLib[id].W.diagonal() = Eigen::VectorXd::Ones(model_nv);
+
+        id = kin_tasks_stand_one_leg.getId("CoMXY_HipRPY");
+        Eigen::MatrixXd taskMapRPY = Eigen::MatrixXd::Zero(3, 6);
+        taskMapRPY(0, 3) = 1;
+        taskMapRPY(1, 4) = 1;
+        taskMapRPY(2, 5) = 1;
+        kin_tasks_stand_one_leg.taskLib[id].errX = Eigen::VectorXd::Zero(5);
+        kin_tasks_stand_one_leg.taskLib[id].errX.block(0, 0, 2, 1) = pCoMDes.block(0, 0, 2, 1) - pCoMCur.block(0, 0, 2, 1);
+        Eigen::Matrix3d desRot = eul2Rot(base_rpy_des(0), base_rpy_des(1), base_rpy_des(2));
+        kin_tasks_stand_one_leg.taskLib[id].errX.block<3, 1>(2, 0) = diffRot(hip_link_rot, desRot);
+        kin_tasks_stand_one_leg.taskLib[id].derrX = Eigen::VectorXd::Zero(5);
+        kin_tasks_stand_one_leg.taskLib[id].ddxDes = Eigen::VectorXd::Zero(5);
+        kin_tasks_stand_one_leg.taskLib[id].dxDes = Eigen::VectorXd::Zero(5);
+        kin_tasks_stand_one_leg.taskLib[id].kp = Eigen::MatrixXd::Identity(5, 5) * 1000; // 100
+        kin_tasks_stand_one_leg.taskLib[id].kd = Eigen::MatrixXd::Identity(5, 5) * 10;
+        kin_tasks_stand_one_leg.taskLib[id].kp.block(2, 2, 3, 3) = Eigen::MatrixXd::Identity(3, 3) * 1000; // 100 // for hip rpy
+        kin_tasks_stand_one_leg.taskLib[id].kd.block(2, 2, 3, 3) = Eigen::MatrixXd::Identity(3, 3) * 10;   // 100  // for hip rpy
+        kin_tasks_stand_one_leg.taskLib[id].J = Eigen::MatrixXd::Zero(5, model_nv);
+        kin_tasks_stand_one_leg.taskLib[id].J.block(0, 0, 2, model_nv) = Jcom.block(0, 0, 2, model_nv);
+        kin_tasks_stand_one_leg.taskLib[id].J.block(2, 0, 3, model_nv) = taskMapRPY * J_hip_link;
+
+        kin_tasks_stand_one_leg.taskLib[id].J.block(2, 18, 3, 1).setZero();  // exculde waist joints
+        kin_tasks_stand_one_leg.taskLib[id].J.block(2, 19, 3, 10).setZero(); // exculde arm joints
+
+        kin_tasks_stand_one_leg.taskLib[id].dJ = Eigen::MatrixXd::Zero(5, model_nv);
+        kin_tasks_stand_one_leg.taskLib[id].W.diagonal() = Eigen::VectorXd::Ones(model_nv);
+
+        // std::cout << "Ended CoMXY_HipRPY!" << std::endl;
+
+        id = kin_tasks_stand_one_leg.getId("Pz");
+        kin_tasks_stand_one_leg.taskLib[id].errX = Eigen::VectorXd::Zero(1);
+        kin_tasks_stand_one_leg.taskLib[id].errX(0) = base_pos_des(2) - q(2);
+        kin_tasks_stand_one_leg.taskLib[id].derrX = Eigen::VectorXd::Zero(1);
+        kin_tasks_stand_one_leg.taskLib[id].ddxDes = Eigen::VectorXd::Zero(1);
+        kin_tasks_stand_one_leg.taskLib[id].dxDes = Eigen::VectorXd::Zero(1);
+        kin_tasks_stand_one_leg.taskLib[id].kp = Eigen::MatrixXd::Identity(1, 1) * 2000; // 100
+        kin_tasks_stand_one_leg.taskLib[id].kd = Eigen::MatrixXd::Identity(1, 1) * 10;
+
+        Eigen::MatrixXd taskMap = Eigen::MatrixXd::Zero(1, 6);
+        taskMap(0, 2) = 1;
+
+        kin_tasks_stand_one_leg.taskLib[id].J = taskMap * J_base;
+        kin_tasks_stand_one_leg.taskLib[id].J.block(0, 18, 1, 1).setZero(); // exclude waist joint
+
+        kin_tasks_stand_one_leg.taskLib[id].dJ = taskMap * dJ_base;
+        kin_tasks_stand_one_leg.taskLib[id].dJ.block(0, 18, 1, 1).setZero(); // exclude waist joint
+
+        kin_tasks_stand_one_leg.taskLib[id].W.diagonal() = Eigen::VectorXd::Ones(model_nv);
+
+        // std::cout << "Ended Pz!" << std::endl;
+    }
+
     if (motionStateCur == DataBus::Walk || motionStateCur == DataBus::Walk2Stand)
     {
         // std::cout << "Entered motionStateCur == DataBus::Walk || motionStateCur == DataBus::Walk2Stand" << std::endl;
@@ -1043,6 +1131,16 @@ void WBC_priority_G1::computeDdq(Pin_KinDyn_G1 &pinKinDynIn)
         ddq_final_kin = kin_tasks_stand.out_ddq;
 
         // std::cout << "Ended motionStateCur == DataBus::Stand" << std::endl;
+    }
+    else if (motionStateCur == DataBus::StandOneLeg)
+    {
+        kin_tasks_stand_one_leg.computeAll(des_delta_q, des_dq, des_ddq, dyn_M, dyn_M_inv, dq);
+
+        delta_q_final_kin = kin_tasks_stand_one_leg.out_delta_q;
+
+        dq_final_kin = kin_tasks_stand_one_leg.out_dq;
+
+        ddq_final_kin = kin_tasks_stand_one_leg.out_ddq;
     }
     else
     {

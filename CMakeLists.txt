@@ -113,3 +113,9 @@ target_link_libraries(walk_wbc_G1 core mujoco ${sysSimLibs} dl)
 
 add_executable(squat_wbc_G1 demo/squat_wbc_G1.cpp)
 target_link_libraries(squat_wbc_G1 core mujoco ${sysSimLibs} dl)
+
+add_executable(one_leg_balance_wbc_G1 demo/one_leg_balance_wbc_G1.cpp)
+target_link_libraries(one_leg_balance_wbc_G1 core mujoco ${sysSimLibs} dl)
+
+add_executable(walk_mpc_wbc_G1 demo/walk_mpc_wbc_G1.cpp)
+target_link_libraries(walk_mpc_wbc_G1 core mujoco ${sysSimLibs} dl)

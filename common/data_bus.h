@@ -119,7 +119,8 @@ struct DataBus{
     enum MotionState{
         Stand,
         Walk,
-        Walk2Stand
+        Walk2Stand,
+        StandOneLeg
     };
     enum LegState{
         LSt,

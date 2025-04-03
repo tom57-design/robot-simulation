@@ -9,15 +9,13 @@
 #include "pino_kin_dyn_G1.h"
 #include "data_logger.h"
 #include "wbc_priority_G1.h"
-// #include "gait_scheduler.h"
-// #include "foot_placement.h"
-#include "gait_scheduler_G1.h"
-#include "foot_placement_G1.h"
+#include "gait_scheduler.h"
+#include "foot_placement.h"
 #include "joystick_interpreter.h"
 
 // MuJoCo load and compile model
 char error[1000] = "Could not load binary model";
-mjModel *mj_model = mj_loadXML("../models/unitree_g1/g1_23dof.xml", 0, error, 1000);
+mjModel *mj_model = mj_loadXML("../models/unitree_g1/g1_23dof_feet_fixed.xml", 0, error, 1000);
 mjData *mj_data = mj_makeData(mj_model);
 
 //************************
@@ -30,25 +28,17 @@ int main(int argc, const char **argv)
     Pin_KinDyn_G1 kinDynSolver("../models/unitree_g1/g1_23dof.urdf");                         // kinematics and dynamics solver
     DataBus RobotState(kinDynSolver.model_nv);                                                // data bus
     WBC_priority_G1 WBC_solv(kinDynSolver.model_nv, 6 + 12, 22, 0.7, mj_model->opt.timestep); // WBC solver
-    GaitScheduler_G1 gaitScheduler(0.4, mj_model->opt.timestep);                              // gait scheduler
+    GaitScheduler gaitScheduler(0.4, mj_model->opt.timestep);                                 // gait scheduler
     PVT_Ctr_G1 pvtCtr(mj_model->opt.timestep, "../common/joint_ctrl_config_G1.json");         // PVT joint control
-    FootPlacement_G1 footPlacement;
-    JoyStickInterpreter jsInterp(mj_model->opt.timestep); // desired baselink velocity generator
-    DataLogger logger("../record/datalog.log");           // data logger
+    FootPlacement footPlacement;                                                              // foot-placement planner
+    JoyStickInterpreter jsInterp(mj_model->opt.timestep);                                     // desired baselink velocity generator
+    DataLogger logger("../record/datalog.log");                                               // data logger
 
     // variables ini
     double stand_legLength = 0.69; // desired baselink height
     double foot_height = 0.07;     // distance between the foot ankel joint and the bottom
-    double xv_des = 1.2 * 0.4;     // desired velocity in x direction
 
     RobotState.width_hips = 0.229;
-
-    gaitScheduler.FzThrehold = 150;
-    footPlacement.kp_vx = 50 * 0.03;
-    footPlacement.kp_vy = 10 * 0.035;
-    footPlacement.kp_wz = 0.03;
-    footPlacement.stepHeight = 0.25 / 2 * 0.8;
-    footPlacement.legLength = stand_legLength;
     // mju_copy(mj_data->qpos, mj_model->key_qpos, mj_model->nq*1); // set ini pos in Mujoco
     int model_nv = kinDynSolver.model_nv;
 
@@ -62,8 +52,8 @@ int main(int argc, const char **argv)
 
     Eigen::Vector3d fe_l_pos_L_des = {0.04, 0.18, -0.72};     // Tuned
     Eigen::Vector3d fe_r_pos_L_des = {0.04, -0.18, -0.72};    // Tuned
-    Eigen::Vector3d fe_l_eul_L_des = {-0.000, -0.15, -0.000}; // Tuned
-    Eigen::Vector3d fe_r_eul_L_des = {0.000, -0.15, 0.000};   // Tuned
+    Eigen::Vector3d fe_l_eul_L_des = {-0.000, -0.08, -0.000}; // Tuned
+    Eigen::Vector3d fe_r_eul_L_des = {0.000, -0.08, 0.000};   // Tuned
 
     Eigen::Matrix3d fe_l_rot_des = eul2Rot(fe_l_eul_L_des(0), fe_l_eul_L_des(1), fe_l_eul_L_des(2));
     Eigen::Matrix3d fe_r_rot_des = eul2Rot(fe_r_eul_L_des(0), fe_r_eul_L_des(1), fe_r_eul_L_des(2));
@@ -108,8 +98,9 @@ int main(int argc, const char **argv)
     double simEndTime = 30;
     mjtNum simstart = mj_data->time;
     double simTime = mj_data->time;
-    double startSteppingTime = 0.25;
-    double startWalkingTime = 0.5;
+    double startSquatingTime_1 = 0.5;
+    double startStandingTime_1 = 3.5;
+    double startBalancingTime_1 = 5.5;
 
     // init UI: GLFW
     uiController.iniGLFW();
@@ -118,11 +109,6 @@ int main(int argc, const char **argv)
 
     while (!glfwWindowShouldClose(uiController.window))
     {
-
-        // advance interactive simulation for 1/60 sec
-        //  Assuming MuJoCo can simulate faster than real-time, which it usually can,
-        //  this loop will finish on time for the next frame to be rendered at 60 fps.
-        //  Otherwise add a cpu timer and exit this loop when it is time to render.
         simstart = mj_data->time;
         while (mj_data->time - simstart < 1.0 / 60.0 && uiController.runSim) // press "1" to pause and resume, "2" to step the simulation
         {
@@ -130,7 +116,7 @@ int main(int argc, const char **argv)
             mj_step(mj_model, mj_data);
 
             simTime = mj_data->time;
-            // printf("-------------%.3f s------------\n", simTime);
+            printf("-------------%.3f s------------\n", simTime);
 
             mj_interface.updateSensorValues();
 
@@ -142,35 +128,87 @@ int main(int argc, const char **argv)
             kinDynSolver.computeDyn();
             kinDynSolver.dataBusWrite(RobotState);
 
-            if (simTime > startWalkingTime)
+            if (simTime > startSquatingTime_1 && simTime <= startStandingTime_1)
             {
-                // std::cout << "Started Walking!!!" << std::endl;
+                const double dt = 0.001;
 
-                jsInterp.setWzDesLPara(0, 0.2 * 5.5);
-                jsInterp.setVxDesLPara(xv_des, 0.2 * 5.5); // jsInterp.setVxDesLPara(0.9,1);
-                RobotState.motionState = DataBus::Walk;    // start walking
+                fe_l_pos_L_des(2) = Ramp(fe_l_pos_L_des(2), -stand_legLength * 0.75, 0.1 * dt); // 0.5
+                fe_r_pos_L_des(2) = Ramp(fe_r_pos_L_des(2), -stand_legLength * 0.75, 0.1 * dt);
+
+                fe_l_eul_L_des = {-0.0, -0.0, -0.0};
+                fe_r_eul_L_des = {0.0, -0.0, 0.0};
+
+                fe_l_rot_des = eul2Rot(fe_l_eul_L_des(0), fe_l_eul_L_des(1), fe_l_eul_L_des(2));
+                fe_r_rot_des = eul2Rot(fe_r_eul_L_des(0), fe_r_eul_L_des(1), fe_r_eul_L_des(2));
+
+                auto resLeg = kinDynSolver.computeInK_Leg(fe_l_rot_des, fe_l_pos_L_des, fe_r_rot_des, fe_r_pos_L_des);
+                auto resHand = kinDynSolver.computeInK_Hand(hd_l_rot_des, hd_l_pos_L_des, hd_r_rot_des, hd_r_pos_L_des);
+
+                RobotState.base_pos_stand = RobotState.base_pos;
+
+                RobotState.motors_pos_des = eigen2std(resLeg.jointPosRes + resHand.jointPosRes);
+                RobotState.motors_vel_des.assign(model_nv - 6, 0);
+                RobotState.motors_tor_des.assign(model_nv - 6, 0);
+
+                RobotState.motionState = DataBus::StandOneLeg;
+            }
+            else if (simTime > startStandingTime_1 && simTime <= startBalancingTime_1)
+            {
+                const double dt = 0.001;
+
+                fe_l_pos_L_des(2) = Ramp(fe_l_pos_L_des(2), -stand_legLength, 0.2 * dt); // 0.5
+                fe_r_pos_L_des(2) = Ramp(fe_r_pos_L_des(2), -stand_legLength, 0.2 * dt);
+
+                fe_l_eul_L_des = {-0.0, -0.0, -0.0};
+                fe_r_eul_L_des = {0.0, -0.0, 0.0};
+
+                fe_l_rot_des = eul2Rot(fe_l_eul_L_des(0), fe_l_eul_L_des(1), fe_l_eul_L_des(2));
+                fe_r_rot_des = eul2Rot(fe_r_eul_L_des(0), fe_r_eul_L_des(1), fe_r_eul_L_des(2));
+
+                auto resLeg = kinDynSolver.computeInK_Leg(fe_l_rot_des, fe_l_pos_L_des, fe_r_rot_des, fe_r_pos_L_des);
+                auto resHand = kinDynSolver.computeInK_Hand(hd_l_rot_des, hd_l_pos_L_des, hd_r_rot_des, hd_r_pos_L_des);
+
+                RobotState.base_pos_stand = RobotState.base_pos;
+
+                RobotState.motors_pos_des = eigen2std(resLeg.jointPosRes + resHand.jointPosRes);
+                RobotState.motors_vel_des.assign(model_nv - 6, 0);
+                RobotState.motors_tor_des.assign(model_nv - 6, 0);
+
+                RobotState.motionState = DataBus::StandOneLeg;
+            }
+            else if (simTime > startBalancingTime_1)
+            {
+                const double dt = 0.001;
+
+                RobotState.base_pos_stand = RobotState.base_pos;
+
+                double tilt_angle = M_PI / 6;
+                fe_l_pos_L_des = {0.04, 0.18 + 0.72 * sin(tilt_angle), -0.72 * cos(tilt_angle)}; // Tuned
+                fe_l_eul_L_des = {tilt_angle, -0.15, -0.000};                                    // Tuned
+
+                fe_r_pos_L_des(2) = Ramp(fe_r_pos_L_des(2), -stand_legLength * 0.5, dt);
+                fe_r_eul_L_des = {0.0, -0.0, 0.0};
+                fe_r_rot_des = eul2Rot(fe_r_eul_L_des(0), fe_r_eul_L_des(1), fe_r_eul_L_des(2));
+
+                auto resLeg = kinDynSolver.computeInK_Leg(fe_l_rot_des, fe_l_pos_L_des, fe_r_rot_des, fe_r_pos_L_des);
+                auto resHand = kinDynSolver.computeInK_Hand(hd_l_rot_des, hd_l_pos_L_des, hd_r_rot_des, hd_r_pos_L_des);
+
+                RobotState.base_pos_des(0) = Ramp(RobotState.base_pos(0), RobotState.fe_r_pos_L(0), 50 * dt);
+                RobotState.base_pos_des(1) = Ramp(RobotState.base_pos(1), RobotState.fe_l_pos_L(1) + 0.5, 50 * dt);
+                RobotState.base_pos_des(2) = Ramp(RobotState.base_pos(2), stand_legLength * 0.9, dt);
+
+                RobotState.base_rpy_des = RobotState.base_rpy;
+                RobotState.base_rpy_des(0) = Ramp(RobotState.base_rpy(0), -60 * M_PI / 180.0, 50 * dt);
+                RobotState.base_rpy_des(1) = Ramp(RobotState.base_rpy(1), 60 * M_PI / 180.0, 80 * dt);
+
+                RobotState.motors_pos_des = eigen2std(resLeg.jointPosRes + resHand.jointPosRes);
+                RobotState.motors_vel_des.assign(model_nv - 6, 0);
+                RobotState.motors_tor_des.assign(model_nv - 6, 0);
+
+                RobotState.motionState = DataBus::StandOneLeg;
             }
             else
-
                 jsInterp.setIniPos(RobotState.q(0), RobotState.q(1), RobotState.base_rpy(2));
-
-            jsInterp.step();
-            RobotState.js_pos_des(2) = stand_legLength + foot_height; // pos z is not assigned in jyInterp
-            jsInterp.dataBusWrite(RobotState);                        // only pos x, pos y, theta z, vel x, vel y , omega z are rewrote.
-
-            if (simTime >= startSteppingTime)
-            {
-                // std::cout << "Started Stepping!!!" << std::endl;
-
-                // gait scheduler
-                gaitScheduler.dataBusRead(RobotState);
-                gaitScheduler.step();
-                gaitScheduler.dataBusWrite(RobotState);
-
-                footPlacement.dataBusRead(RobotState);
-                footPlacement.getSwingPos();
-                footPlacement.dataBusWrite(RobotState);
-            }
 
             // ------------- WBC ------------
             // WBC input
@@ -178,27 +216,6 @@ int main(int argc, const char **argv)
             RobotState.des_ddq = Eigen::VectorXd::Zero(mj_model->nv);
             RobotState.des_dq = Eigen::VectorXd::Zero(mj_model->nv);
             RobotState.des_delta_q = Eigen::VectorXd::Zero(mj_model->nv);
-            RobotState.base_rpy_des << 0, 0, jsInterp.thetaZ;
-            RobotState.base_pos_des(2) = stand_legLength + foot_height;
-
-            RobotState.Fr_ff << 0, 0, 370, 0, 0, 0,
-                0, 0, 370, 0, 0, 0;
-
-            // adjust des_delata_q, des_dq and des_ddq to achieve forward walking
-            if (simTime > startWalkingTime + 0.4 / 2)
-            {
-                // std::cout << "Started Forward Walking!!!" << std::endl;
-
-                RobotState.des_delta_q.block<2, 1>(0, 0) << jsInterp.vx_W * mj_model->opt.timestep, jsInterp.vy_W * mj_model->opt.timestep;
-                RobotState.des_delta_q(5) = jsInterp.wz_L * mj_model->opt.timestep;
-                RobotState.des_dq.block<2, 1>(0, 0) << jsInterp.vx_W, jsInterp.vy_W;
-                RobotState.des_dq(5) = jsInterp.wz_L;
-
-                double k = 5 * 2.5;
-                RobotState.des_ddq.block<2, 1>(0, 0) << k * (jsInterp.vx_W - RobotState.dq(0)), k * (jsInterp.vy_W -
-                                                                                                     RobotState.dq(1));
-                RobotState.des_ddq(5) = k * (jsInterp.wz_L - RobotState.dq(5));
-            }
 
             // WBC Calculation
             WBC_solv.dataBusRead(RobotState);
@@ -209,13 +226,38 @@ int main(int argc, const char **argv)
 
             WBC_solv.dataBusWrite(RobotState);
 
-            // get the final joint command
-            if (simTime <= startSteppingTime)
+            pvtCtr.dataBusRead(RobotState);
+            if (simTime <= startSquatingTime_1)
             {
+                pvtCtr.calMotorsPVT(100.0 / 1000.0 / 180.0 * 3.1415);
+            }
+            else if (simTime > startStandingTime_1 && simTime <= startBalancingTime_1)
+            {
+                //**** Comment out this section to make the robot stand still & debug for foot placement ****//
+                Eigen::VectorXd pos_des = kinDynSolver.integrateDIY(RobotState.q, RobotState.wbc_delta_q_final);
+                RobotState.motors_pos_des = eigen2std(pos_des.block(7, 0, model_nv - 6, 1));
+                RobotState.motors_vel_des = eigen2std(RobotState.wbc_dq_final);
+                RobotState.motors_tor_des = eigen2std(RobotState.wbc_tauJointRes);
 
-                RobotState.motors_pos_des = eigen2std(resLeg.jointPosRes + resHand.jointPosRes);
-                RobotState.motors_vel_des = motors_vel_des;
-                RobotState.motors_tor_des = motors_tau_des;
+                pvtCtr.calMotorsPVT(0.1 / 180.0 * 3.1415);
+            }
+            else if (simTime >= startBalancingTime_1)
+            {
+                //**** For G1-23DOF ****//
+                pvtCtr.setJointPD(1600, 5, "left_hip_pitch_joint");
+                pvtCtr.setJointPD(800, 10, "left_hip_roll_joint");
+                pvtCtr.setJointPD(1600, 5, "right_hip_pitch_joint");
+                pvtCtr.setJointPD(800, 10, "right_hip_roll_joint");
+                pvtCtr.setJointPD(3600, 10, "left_ankle_roll_joint");
+                pvtCtr.setJointPD(800, 10, "right_ankle_roll_joint");
+
+                //**** Comment out this section to make the robot stand still & debug for foot placement ****//
+                Eigen::VectorXd pos_des = kinDynSolver.integrateDIY(RobotState.q, RobotState.wbc_delta_q_final);
+                RobotState.motors_pos_des = eigen2std(pos_des.block(7, 0, model_nv - 6, 1));
+                RobotState.motors_vel_des = eigen2std(RobotState.wbc_dq_final);
+                RobotState.motors_tor_des = eigen2std(RobotState.wbc_tauJointRes);
+
+                pvtCtr.calMotorsPVT();
             }
             else
             {
@@ -224,26 +266,8 @@ int main(int argc, const char **argv)
                 RobotState.motors_pos_des = eigen2std(pos_des.block(7, 0, model_nv - 6, 1));
                 RobotState.motors_vel_des = eigen2std(RobotState.wbc_dq_final);
                 RobotState.motors_tor_des = eigen2std(RobotState.wbc_tauJointRes);
-            }
 
-            pvtCtr.dataBusRead(RobotState);
-            if (simTime <= startWalkingTime) // This timing is critical
-            {
-                pvtCtr.calMotorsPVT(100.0 / 1000.0 / 180.0 * 3.1415);
-            }
-            else
-            {
-                //**** For G1-23DOF ****//
-                // Also comment out this section if we want to make it stand still
-                pvtCtr.setJointPD(100, 5, "left_ankle_pitch_joint");
-                pvtCtr.setJointPD(40, 10, "left_ankle_roll_joint");
-                pvtCtr.setJointPD(100, 5, "right_ankle_pitch_joint");
-                pvtCtr.setJointPD(40, 10, "right_ankle_roll_joint");
-                pvtCtr.setJointPD(1600, 100, "left_knee_joint");
-                pvtCtr.setJointPD(1600, 100, "right_knee_joint");
-
-                // pvtCtr.calMotorsPVT();
-                pvtCtr.calMotorsPVT(0.5 / 180.0 * 3.1415); // This limit is critical
+                pvtCtr.calMotorsPVT();
             }
             pvtCtr.dataBusWrite(RobotState);
 
@@ -272,53 +296,6 @@ int main(int argc, const char **argv)
             // printf("rpyVal=[%.5f, %.5f, %.5f]\n", RobotState.rpy[0], RobotState.rpy[1], RobotState.rpy[2]);
             // printf("gps=[%.5f, %.5f, %.5f]\n", RobotState.basePos[0], RobotState.basePos[1], RobotState.basePos[2]);
             // printf("vel=[%.5f, %.5f, %.5f]\n", RobotState.baseLinVel[0], RobotState.baseLinVel[1], RobotState.baseLinVel[2]);
-
-            //**** VISUALIZING PLANNED FOOT STEPS ****//
-            Eigen::Vector3d swingPos = RobotState.swing_fe_pos_des_W; // Current swing foot position
-
-            // Persistent storage for last known swing foot position
-            static Eigen::Vector3d lastSwingPos_left(0, 0, 0);
-            static Eigen::Vector3d lastSwingPos_right(0, 0, 0);
-
-            int left_site_id = mj_name2id(mj_model, mjOBJ_SITE, "left_step_plan");
-            int right_site_id = mj_name2id(mj_model, mjOBJ_SITE, "right_step_plan");
-
-            int base_des_site_id = mj_name2id(mj_model, mjOBJ_SITE, "base_pos_des");
-
-            // Update the site for the swing foot
-            if (RobotState.legState == DataBus::LSt && right_site_id >= 0)
-            { // Left stance, right swing
-                mj_data->site_xpos[right_site_id * 3] = swingPos.x();
-                mj_data->site_xpos[right_site_id * 3 + 1] = swingPos.y();
-                mj_data->site_xpos[right_site_id * 3 + 2] = swingPos.z();
-
-                mj_data->site_xpos[left_site_id * 3] = lastSwingPos_left.x();
-                mj_data->site_xpos[left_site_id * 3 + 1] = lastSwingPos_left.y();
-                mj_data->site_xpos[left_site_id * 3 + 2] = lastSwingPos_left.z();
-
-                lastSwingPos_right = swingPos;
-            }
-            else if (RobotState.legState == DataBus::RSt && left_site_id >= 0)
-            { // Right stance, left swing
-                mj_data->site_xpos[left_site_id * 3] = swingPos.x();
-                mj_data->site_xpos[left_site_id * 3 + 1] = swingPos.y();
-                mj_data->site_xpos[left_site_id * 3 + 2] = swingPos.z();
-
-                mj_data->site_xpos[right_site_id * 3] = lastSwingPos_right.x();
-                mj_data->site_xpos[right_site_id * 3 + 1] = lastSwingPos_right.y();
-                mj_data->site_xpos[right_site_id * 3 + 2] = lastSwingPos_right.z();
-
-                lastSwingPos_left = swingPos;
-            }
-
-            // if (base_des_site_id >= 0)
-            // {
-            //     mj_data->site_xpos[base_des_site_id * 3] = RobotState.swingDesPosFinal_W(0);
-            //     mj_data->site_xpos[base_des_site_id * 3 + 1] = RobotState.swingDesPosFinal_W(1);
-            //     mj_data->site_xpos[base_des_site_id * 3 + 2] = RobotState.swingDesPosFinal_W(2);
-            // }
-
-            //**** END OF VISUALIZING PLANNED FOOT STEPS ****//
         }
 
         if (mj_data->time >= simEndTime)

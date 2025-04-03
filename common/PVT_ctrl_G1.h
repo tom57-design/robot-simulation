@@ -18,7 +18,7 @@ Feel free to use in any purpose, and cite OpenLoong-Dynamics-Control in any styl
 #include "LPF_fst.h"
 #include <vector>
 #include <cmath>
-#include "data_bus_G1.h"
+#include "data_bus.h"
 
 class PVT_Ctr_G1
 {

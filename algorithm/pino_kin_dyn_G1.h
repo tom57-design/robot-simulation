@@ -17,7 +17,7 @@ Feel free to use in any purpose, and cite OpenLoong-Dynamics-Control in any styl
 #include "pinocchio/algorithm/centroidal.hpp"
 #include "pinocchio/algorithm/center-of-mass.hpp"
 #include "pinocchio/algorithm/aba.hpp"
-#include "data_bus_G1.h"
+#include "data_bus.h"
 #include <string>
 #include "json/json.h"
 #include <vector>
