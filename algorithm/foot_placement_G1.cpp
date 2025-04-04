@@ -56,8 +56,8 @@ void FootPlacement_G1::getSwingPos() {
     posDes_W(1)+=0.5*hip_width* (sin(thetaF)-sin(yawCur+theta0));
 
     double xOff_L=-0.01 * (-1.5); // foot-end position offset in x direction in body frame
-    double yOff_L=0.01 * (-2); // foot-end position offset in y direction in body frame, positive for moving the leg inside
-    double zOff_W=-0.035 * (5); // foot-end position offset in z direction in world frame
+    double yOff_L=0.01 * (-2.5); // foot-end position offset in y direction in body frame, positive for moving the leg inside
+    double zOff_W=-0.035 * (3.5); // foot-end position offset in z direction in world frame
 
 
 //    posDes_W(2)=STPos_W(2)-0.04;
