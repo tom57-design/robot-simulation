@@ -45,14 +45,14 @@ int main(int argc, char **argv)
     // initialize variables
     double stand_legLength = 0.72; // 0.97;// desired baselink height
     double foot_height = 0.07;     // distance between the foot ankel joint and the bottom
-    double xv_des = 1.2 * 0.4;     // desired velocity in x direction
+    double xv_des = 1.2 * 0.4 * 0.5;     // desired velocity in x direction
     int model_nv = kinDynSolver.model_nv;
 
     RobotState.width_hips = 0.229;
     footPlacement.kp_vx = 0.03 * 5;
     footPlacement.kp_vy = 0.03;
     footPlacement.kp_wz = 0.03;
-    footPlacement.stepHeight = 0.1;
+    footPlacement.stepHeight = 0.1 * 0.5;
     footPlacement.legLength = stand_legLength;
 
     gaitScheduler.FzThrehold = 100;

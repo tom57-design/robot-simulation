@@ -92,22 +92,25 @@ int main(int argc, char **argv) {
     WBC_solv.setQini(qIniDes,RobotState.q);
 
     // register variable name for data logger
-    logger.addIterm("simTime",1);
-    logger.addIterm("motor_pos_des",model_nv - 6);
-    logger.addIterm("motor_pos_cur",model_nv - 6);
-    logger.addIterm("motor_vel_des",model_nv - 6);
-    logger.addIterm("motor_vel_cur",model_nv - 6);
-    logger.addIterm("motor_tor_des",model_nv - 6);
-    logger.addIterm("rpyVal",3);
-    logger.addIterm("base_omega_W",3);
-    logger.addIterm("gpsVal",3);
-    logger.addIterm("base_vel",3);
-	logger.addIterm("dX_cal",12);
-	logger.addIterm("Ufe",12);
-	logger.addIterm("Xd",12);
-	logger.addIterm("X_cur",12);
-	logger.addIterm("X_cal",12);
+    logger.addIterm("simTime", 1);
+    logger.addIterm("motors_pos_cur", model_nv - 6);
+    logger.addIterm("motors_vel_cur", model_nv - 6);
+    logger.addIterm("motors_tor_cur", model_nv - 6);
+    logger.addIterm("rpy", 3);
+    logger.addIterm("fL", 3);
+    logger.addIterm("fR", 3);
+    logger.addIterm("basePos", 3);
+    logger.addIterm("baseLinVel", 3);
+    logger.addIterm("baseAcc", 3);
+    logger.addIterm("baseAngVel", 3);
     logger.finishItermAdding();
+
+    // Write the headers to the first row of the log file
+    logger.writeHeaders();
+
+    // Define logging interval (e.g., 0.01s for 100Hz logging)
+    double log_interval = 0.01;
+    double last_log_time = 0.0;
 
     //// -------------------------- main loop --------------------------------
 
@@ -225,24 +228,25 @@ int main(int argc, char **argv) {
 //            printf("rpyVal=[%.5f, %.5f, %.5f]\n", RobotState.rpy[0], RobotState.rpy[1], RobotState.rpy[2]);
 //            printf("basePos=[%.5f, %.5f, %.5f]\n", RobotState.basePos[0], RobotState.basePos[1], RobotState.basePos[2]);
 
-            // data save
-            logger.startNewLine();
-            logger.recItermData("simTime", simTime);
-            logger.recItermData("motor_pos_des", RobotState.motors_pos_des);
-            logger.recItermData("motor_pos_cur", RobotState.motors_pos_cur);
-            logger.recItermData("motor_vel_des", RobotState.motors_vel_des);
-            logger.recItermData("motor_vel_cur", RobotState.motors_vel_cur);
-            logger.recItermData("motor_tor_des", RobotState.motors_tor_des);
-            logger.recItermData("rpyVal", RobotState.rpy);
-            logger.recItermData("base_omega_W", RobotState.base_omega_W);
-            logger.recItermData("gpsVal", RobotState.basePos);
-            logger.recItermData("base_vel", RobotState.dq.block<3, 1>(0, 0));
-			logger.recItermData("dX_cal",RobotState.dX_cal);
-			logger.recItermData("Ufe",RobotState.Fr_ff);
-			logger.recItermData("Xd",RobotState.Xd);
-			logger.recItermData("X_cur",RobotState.X_cur);
-			logger.recItermData("X_cal",RobotState.X_cal);
-			logger.finishLine();
+            // Logging condition: log only if log_interval has passed
+            if (simTime - last_log_time >= log_interval)
+            {
+                logger.startNewLine();
+                logger.recItermData("simTime", simTime);
+                logger.recItermData("motors_pos_cur", RobotState.motors_pos_cur);
+                logger.recItermData("motors_vel_cur", RobotState.motors_vel_cur);
+                logger.recItermData("motors_tor_cur", RobotState.motors_tor_cur);
+                logger.recItermData("rpy", RobotState.rpy);
+                logger.recItermData("fL", RobotState.fL);
+                logger.recItermData("fR", RobotState.fR);
+                logger.recItermData("basePos", RobotState.basePos);
+                logger.recItermData("baseLinVel", RobotState.baseLinVel);
+                logger.recItermData("baseAcc", RobotState.baseAcc);
+                logger.recItermData("baseAngVel", RobotState.baseAngVel);
+                logger.finishLine();
+
+                last_log_time = simTime; // Update last log time
+            }
         }
 
         if (mj_data->time>=simEndTime)
