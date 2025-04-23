@@ -1,0 +1,254 @@
+{
+   "left_leg_joint_6": {
+      "PVT_LPF_Fc": 20,
+      "kd": 160.0,
+      "kp": 1600.0,
+      "maxPos": 0.61087,
+      "maxSpeed": 48.8,
+      "maxTorque": 58.5,
+      "minPos": -0.43644
+   },
+   "left_leg_joint_7": {
+      "PVT_LPF_Fc": 20,
+      "kd": 100.0,
+      "kp": 800.0,
+      "maxPos": 0.43633,
+      "maxSpeed": 48.8,
+      "maxTorque": 58.5,
+      "minPos": -0.43633
+   },
+   "right_leg_joint_6": {
+      "PVT_LPF_Fc": 20,
+      "kd": 160.0,
+      "kp": 1600.0,
+      "maxPos": 0.61087,
+      "maxSpeed": 48.8,
+      "maxTorque": 58.5,
+      "minPos": -0.43633
+   },
+   "right_leg_joint_7": {
+      "PVT_LPF_Fc": 20,
+      "kd": 100.0,
+      "kp": 800.0,
+      "maxPos": 0.43633,
+      "maxSpeed": 48.8,
+      "maxTorque": 58.5,
+      "minPos": -0.43633
+   },
+   "left_arm_joint_1": {
+      "PVT_LPF_Fc": 20,
+      "kd": 80.0,
+      "kp": 1600.0,
+      "maxPos": 2.96706,
+      "maxSpeed": 3.14,
+      "maxTorque": 80.0,
+      "minPos": -2.96706
+   },
+   "left_arm_joint_2": {
+      "PVT_LPF_Fc": 20,
+      "kd": 80.0,
+      "kp": 1600.0,
+      "maxPos": 1.83260,
+      "maxSpeed": 3.14,
+      "maxTorque": 80.0,
+      "minPos": -1.83260
+   },
+   "left_arm_joint_3": {
+      "PVT_LPF_Fc": 20,
+      "kd": 16,
+      "kp": 800.0,
+      "maxPos": 2.96706,
+      "maxSpeed": 3.14,
+      "maxTorque": 48,
+      "minPos": -2.96706
+   },
+   "left_arm_joint_4": {
+      "PVT_LPF_Fc": 20,
+      "kd": 120.0,
+      "kp": 1200.0,
+      "maxPos": 2.96706,
+      "maxSpeed": 3.14,
+      "maxTorque": 48,
+      "minPos": 0
+   },
+   "left_arm_joint_5": {
+      "PVT_LPF_Fc": 20,
+      "kd": 20.0,
+      "kp": 400.0,
+      "maxPos": 2.96706,
+      "maxSpeed": 6.28,
+      "maxTorque": 12.4,
+      "minPos": -2.96706
+   },
+   "left_arm_joint6": {
+      "PVT_LPF_Fc": 20,
+      "kd": 120.0,
+      "kp": 1200.0,
+      "maxPos": 2.96706,
+      "maxSpeed": 3.14,
+      "maxTorque": 48,
+      "minPos": 0
+   },
+   "left_arm_joint_7": {
+      "PVT_LPF_Fc": 20,
+      "kd": 12.0,
+      "kp": 600.0,
+      "maxPos": 1.0472,
+      "maxSpeed": 6.28,
+      "maxTorque": 12.4,
+      "minPos": -1.0472
+   },
+   "right_arm_joint_1": {
+      "PVT_LPF_Fc": 20,
+      "kd": 80.0,
+      "kp": 1600.0,
+      "maxPos": 2.96706,
+      "maxSpeed": 3.14,
+      "maxTorque": 80.0,
+      "minPos": -2.96706
+   },
+   "right_arm_joint_2": {
+      "PVT_LPF_Fc": 20,
+      "kd": 80.0,
+      "kp": 1600.0,
+      "maxPos": 1.8326,
+      "maxSpeed": 3.14,
+      "maxTorque": 80.0,
+      "minPos": -1.8326
+   },
+   "right_arm_joint_3": {
+      "PVT_LPF_Fc": 20,
+      "kd": 16.0,
+      "kp": 800.0,
+      "maxPos": 2.96706,
+      "maxSpeed": 3.14,
+      "maxTorque": 48.0,
+      "minPos": -2.96706
+   },
+   "right_arm_joint_4": {
+      "PVT_LPF_Fc": 20,
+      "kd": 120.0,
+      "kp": 1200.0,
+      "maxPos": 2.96706,
+      "maxSpeed": 3.14,
+      "maxTorque": 48.0,
+      "minPos": 0
+   },
+   "right_arm_joint_5": {
+      "PVT_LPF_Fc": 20,
+      "kd": 20.0,
+      "kp": 400.0,
+      "maxPos": 2.96706,
+      "maxSpeed": 6.28,
+      "maxTorque": 12.4,
+      "minPos": -2.96706
+   },
+   "right_arm_joint_6": {
+      "PVT_LPF_Fc": 20,
+      "kd": 120.0,
+      "kp": 1200.0,
+      "maxPos": 2.96706,
+      "maxSpeed": 3.14,
+      "maxTorque": 48.0,
+      "minPos": 0
+   },
+   "right_arm_joint_7": {
+      "PVT_LPF_Fc": 20,
+      "kd": 12.0,
+      "kp": 600.0,
+      "maxPos": 1.04720,
+      "maxSpeed": 6.28,
+      "maxTorque": 12.4,
+      "minPos": -1.04720
+   },
+   "left_leg_joint_1": {
+      "PVT_LPF_Fc": 50,
+      "kd": 400.0,
+      "kp": 2000.0,
+      "maxPos": 1.83260,
+      "maxSpeed": 19.16,
+      "maxTorque": 396,
+      "minPos": -0.78540
+   },
+   "left_leg_joint_2": {
+      "PVT_LPF_Fc": 50,
+      "kd": 400.0,
+      "kp": 1600.0,
+      "maxPos": 0.43633,
+      "maxSpeed": 20.94,
+      "maxTorque": 320.0,
+      "minPos": -0.17453
+   },
+   "left_leg_joint_3": {
+      "PVT_LPF_Fc": 50,
+      "kd": 400.0,
+      "kp": 1600.0,
+      "maxPos": 0.69813,
+      "maxSpeed": 19.63,
+      "maxTorque": 160.0,
+      "minPos": -0.69813
+   },
+   "right_leg_joint_1": {
+      "PVT_LPF_Fc": 50,
+      "kd": 400.0,
+      "kp": 2000.0,
+      "maxPos": 1.83260,
+      "maxSpeed": 19.16,
+      "maxTorque": 396.0,
+      "minPos": -0.78540
+   },
+   "right_leg_joint_2": {
+      "PVT_LPF_Fc": 50,
+      "kd": 400.0,
+      "kp": 1600.0,
+      "maxPos": 0.43633,
+      "maxSpeed": 20.94,
+      "maxTorque": 320.0,
+      "minPos": -0.17453
+   },
+   "right_leg_joint_3": {
+      "PVT_LPF_Fc": 50,
+      "kd": 400.0,
+      "kp": 1600.0,
+      "maxPos": 0.69813,
+      "maxSpeed": 19.63,
+      "maxTorque": 160.0,
+      "minPos": -0.69813
+   },
+   "left_leg_joint_4": {
+      "PVT_LPF_Fc": 50,
+      "kd": 100.0,
+      "kp": 2000.0,
+      "maxPos": 0.08727,
+      "maxSpeed": 19.16,
+      "maxTorque": 396.0,
+      "minPos": -2.35619
+   },
+   "right_leg_joint_4": {
+      "PVT_LPF_Fc": 50,
+      "kd": 100.0,
+      "kp": 2000.0,
+      "maxPos": 0.08727,
+      "maxSpeed": 19.16,
+      "maxTorque": 396.0,
+      "minPos": -2.35619
+   },
+   "torso_tilt_joint": {
+      "PVT_LPF_Fc": 50,
+      "kd": 40.0,
+      "kp": 500.0,
+      "maxPos": 0.78540,
+      "maxSpeed": 3.72,
+      "maxTorque": 315.0,
+      "minPos": -0.29671
+   },
+   "torso_pan_joint": {
+      "PVT_LPF_Fc": 50,
+      "kd": 40.0,
+      "kp": 200.0,
+      "maxPos": 0.78540,
+      "maxSpeed": 3.72,
+      "maxTorque": 315.0,
+      "minPos": -0.29671
+   }
+}

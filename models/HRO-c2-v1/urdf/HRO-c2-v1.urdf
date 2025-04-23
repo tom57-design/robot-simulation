@@ -1,0 +1,1787 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This URDF was automatically created by SolidWorks to URDF Exporter! Originally created by Stephen Brawner (brawner@gmail.com) 
+     Commit Version:   Build Version: 1.6.9172.22854
+     For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
+<robot
+  name="HRO-c2-v1">
+  <link
+    name="torso_base_link">
+    <inertial>
+      <origin
+        xyz="-0.0470176847468226 2.49813725718533E-18 -0.0489556288399936"
+        rpy="0 0 0" />
+      <mass
+        value="2.77762716357921" />
+      <inertia
+        ixx="0.00680573131801171"
+        ixy="-1.09655201243339E-18"
+        ixz="0.000377212178676998"
+        iyy="0.0044128931197468"
+        iyz="9.63312125049071E-20"
+        izz="0.007730843281856" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://HRO-c2-v1/meshes/torso_base_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.752941176470588 0.752941176470588 0.752941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://HRO-c2-v1/meshes/torso_base_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link
+    name="torso_mid_link">
+    <inertial>
+      <origin
+        xyz="-0.00156357939065214 0.00715796001621209 0.0658836105821333"
+        rpy="0 0 0" />
+      <mass
+        value="1.31668834620413" />
+      <inertia
+        ixx="0.00267382913699783"
+        ixy="-1.5450639337885E-08"
+        ixz="3.09538253606686E-06"
+        iyy="0.0020105000349069"
+        iyz="3.47184836178839E-10"
+        izz="0.0030443100233419" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://HRO-c2-v1/meshes/torso_mid_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0 0.180392156862745 0.352941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://HRO-c2-v1/meshes/torso_mid_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="torso_pan_joint"
+    type="revolute">
+    <origin
+      xyz="0 0 0"
+      rpy="0 0 0" />
+    <parent
+      link="torso_base_link" />
+    <child
+      link="torso_mid_link" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="0"
+      upper="0"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="torso_upper_link">
+    <inertial>
+      <origin
+        xyz="3.03576608295941E-18 0.149492492845789 0.000746189436203436"
+        rpy="0 0 0" />
+      <mass
+        value="12.6305432689078" />
+      <inertia
+        ixx="0.175502383244543"
+        ixy="3.20078326002922E-18"
+        ixz="-7.05998652814009E-19"
+        iyy="0.09988086580408"
+        iyz="2.81443637384186E-17"
+        izz="0.118925769103356" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://HRO-c2-v1/meshes/torso_upper_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0 0.180392156862745 0.352941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://HRO-c2-v1/meshes/torso_upper_link.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="torso_tilt_joint"
+    type="revolute">
+    <origin
+      xyz="-0.002 0 0.09"
+      rpy="1.5708 0 0" />
+    <parent
+      link="torso_mid_link" />
+    <child
+      link="torso_upper_link" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="0"
+      upper="0"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="right_arm_link_1_2">
+    <inertial>
+      <origin
+        xyz="6.66228826226023E-05 0.00972182902507468 0.111510647715915"
+        rpy="0 0 0" />
+      <mass
+        value="0.895979439094536" />
+      <inertia
+        ixx="0.00172631943125684"
+        ixy="-3.09551137722688E-07"
+        ixz="-6.82522919895056E-07"
+        iyy="0.00167498130035058"
+        iyz="-0.000284594014603556"
+        izz="0.00118988088668159" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://HRO-c2-v1/meshes/right_arm_link_1_2.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0 0.180392156862745 0.352941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://HRO-c2-v1/meshes/right_arm_link_1_2.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="right_arm_joint_1"
+    type="revolute">
+    <origin
+      xyz="0 0.25913 0.12256"
+      rpy="0 0.34907 1.5708" />
+    <parent
+      link="torso_upper_link" />
+    <child
+      link="right_arm_link_1_2" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="0"
+      upper="0"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="right_arm_link_2_3">
+    <inertial>
+      <origin
+        xyz="-6.90115387870227E-05 0.094105278868877 0.0187134412332429"
+        rpy="0 0 0" />
+      <mass
+        value="0.939060504303801" />
+      <inertia
+        ixx="0.00214875863471669"
+        ixy="9.44036791996364E-07"
+        ixz="-4.60285255478099E-07"
+        iyy="0.0013044349407048"
+        iyz="0.000397355965561895"
+        izz="0.00205972072677408" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://HRO-c2-v1/meshes/right_arm_link_2_3.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0 0.180392156862745 0.352941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://HRO-c2-v1/meshes/right_arm_link_2_3.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="right_arm_joint_2"
+    type="revolute">
+    <origin
+      xyz="2.2306018498619E-05 0.001 0.143973500694112"
+      rpy="-1.57079632679491 -1.22173047639603 -3.14159265358979" />
+    <parent
+      link="right_arm_link_1_2" />
+    <child
+      link="right_arm_link_2_3" />
+    <axis
+      xyz="0 0 -1" />
+    <limit
+      lower="0"
+      upper="0"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="right_arm_link_3_4">
+    <inertial>
+      <origin
+        xyz="6.65707262159088E-05 0.00972352162770297 0.111509451426319"
+        rpy="0 0 0" />
+      <mass
+        value="0.896019898350293" />
+      <inertia
+        ixx="0.00172628185309757"
+        ixy="-3.04577399126175E-07"
+        ixz="-6.32019869519424E-07"
+        iyy="0.00167501327849442"
+        iyz="-0.000284584761191662"
+        izz="0.00118994977603313" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://HRO-c2-v1/meshes/right_arm_link_3_4.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0 0.180392156862745 0.352941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://HRO-c2-v1/meshes/right_arm_link_3_4.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="right_arm_joint_3"
+    type="revolute">
+    <origin
+      xyz="-0.000101671704491268 0.155917928242505 -0.00100000000000001"
+      rpy="-1.5707963267949 0 0" />
+    <parent
+      link="right_arm_link_2_3" />
+    <child
+      link="right_arm_link_3_4" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="0"
+      upper="0"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="right_arm_link_4_5">
+    <inertial>
+      <origin
+        xyz="-5.49865908335279E-05 0.0775910844587119 0.0234807779443568"
+        rpy="0 0 0" />
+      <mass
+        value="0.754320266549122" />
+      <inertia
+        ixx="0.00179236507674986"
+        ixy="6.90133957738273E-07"
+        ixz="-3.21555583874682E-07"
+        iyy="0.000991242562896005"
+        iyz="0.000365224224172024"
+        izz="0.00172043416937765" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://HRO-c2-v1/meshes/right_arm_link_4_5.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0 0.180392156862745 0.352941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://HRO-c2-v1/meshes/right_arm_link_4_5.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="right_arm_joint_4"
+    type="revolute">
+    <origin
+      xyz="0.000101671704491213 0.001 0.144082071757494"
+      rpy="1.5707963267949 0 0" />
+    <parent
+      link="right_arm_link_3_4" />
+    <child
+      link="right_arm_link_4_5" />
+    <axis
+      xyz="0 0 -1" />
+    <limit
+      lower="0"
+      upper="0"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="right_arm_link_5_6">
+    <inertial>
+      <origin
+        xyz="4.81902417087121E-05 0.0120985252809178 0.0723353962405098"
+        rpy="0 0 0" />
+      <mass
+        value="0.83041067582962" />
+      <inertia
+        ixx="0.00131924081441891"
+        ixy="-2.47395702841062E-07"
+        ixz="-3.72363128380557E-07"
+        iyy="0.0013094675952543"
+        iyz="-0.00021592222931928"
+        izz="0.000848367166264488" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://HRO-c2-v1/meshes/right_arm_link_5_6.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.352941176470588 0.176470588235294 0 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://HRO-c2-v1/meshes/right_arm_link_5_6.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="right_arm_joint_5"
+    type="revolute">
+    <origin
+      xyz="-0.000101671704491324 0.155917928242505 -0.00100000000000001"
+      rpy="-1.5707963267949 0 0" />
+    <parent
+      link="right_arm_link_4_5" />
+    <child
+      link="right_arm_link_5_6" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="0"
+      upper="0"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="right_arm_link_6_7">
+    <inertial>
+      <origin
+        xyz="5.55440967286436E-05 -0.0645895980066019 0.0130664227994459"
+        rpy="0 0 0" />
+      <mass
+        value="0.60300944764139" />
+      <inertia
+        ixx="0.000896383140689381"
+        ixy="4.10066188280186E-07"
+        ixz="1.93351371226553E-07"
+        iyy="0.0006419209613309"
+        iyz="-0.000161415996999139"
+        izz="0.000893939105049774" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://HRO-c2-v1/meshes/right_arm_link_6_7.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0 0.180392156862745 0.352941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://HRO-c2-v1/meshes/right_arm_link_6_7.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="right_arm_joint_6"
+    type="revolute">
+    <origin
+      xyz="8.89857532566651E-05 0.00100000000000001 0.139053221189858"
+      rpy="-1.5707963267949 0 -3.14159265358979" />
+    <parent
+      link="right_arm_link_5_6" />
+    <child
+      link="right_arm_link_6_7" />
+    <axis
+      xyz="0 0 -1" />
+    <limit
+      lower="0"
+      upper="0"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="right_arm_link_7_flange">
+    <inertial>
+      <origin
+        xyz="3.33066907387547E-16 2.67147415300428E-16 0.0301250008394433"
+        rpy="0 0 0" />
+      <mass
+        value="0.177051025330653" />
+      <inertia
+        ixx="0.000118796552031385"
+        ixy="1.56481807981463E-34"
+        ixz="-3.17734555563843E-20"
+        iyy="0.000118796552031385"
+        iyz="8.02581233020028E-21"
+        izz="0.000183558435030556" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://HRO-c2-v1/meshes/right_arm_link_7_flange.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0 0.180392156862745 0.352941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://HRO-c2-v1/meshes/right_arm_link_7_flange.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="right_arm_joint_7"
+    type="revolute">
+    <origin
+      xyz="8.89857532564986E-05 -0.114946778810142 -0.00100000000000156"
+      rpy="-1.5707963267949 0 3.14159265358979" />
+    <parent
+      link="right_arm_link_6_7" />
+    <child
+      link="right_arm_link_7_flange" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="0"
+      upper="0"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="left_arm_link_1_2">
+    <inertial>
+      <origin
+        xyz="6.68056881808488E-05 0.00972202733370394 0.11151042462186"
+        rpy="0 0 0" />
+      <mass
+        value="0.89599592342446" />
+      <inertia
+        ixx="0.00172626724739608"
+        ixy="-3.14820393570986E-07"
+        ixz="-6.26655379808464E-07"
+        iyy="0.00167498985667316"
+        iyz="-0.000284592291274682"
+        izz="0.00118993521990925" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://HRO-c2-v1/meshes/left_arm_link_1_2.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0 0.180392156862745 0.352941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://HRO-c2-v1/meshes/left_arm_link_1_2.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="left_arm_joint_1"
+    type="revolute">
+    <origin
+      xyz="0 0.259129173662444 -0.122556972690391"
+      rpy="-3.14159265358979 0.349065850398867 -1.5707963267949" />
+    <parent
+      link="torso_upper_link" />
+    <child
+      link="left_arm_link_1_2" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="0"
+      upper="0"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="left_arm_link_2_3">
+    <inertial>
+      <origin
+        xyz="-6.90426710535652E-05 0.0941053457333715 0.0187133302565228"
+        rpy="0 0 0" />
+      <mass
+        value="0.939058631694167" />
+      <inertia
+        ixx="0.00214876243508114"
+        ixy="9.44564681761921E-07"
+        ixz="-4.61703336688338E-07"
+        iyy="0.00130444188982548"
+        iyz="0.000397356533260076"
+        izz="0.00205972503663058" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://HRO-c2-v1/meshes/left_arm_link_2_3.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0 0.180392156862745 0.352941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://HRO-c2-v1/meshes/left_arm_link_2_3.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="left_arm_joint_2"
+    type="revolute">
+    <origin
+      xyz="0.000176550468282966 0.00100000000000001 0.143970358917364"
+      rpy="-1.5707963267949 1.22173047639603 3.14159265358979" />
+    <parent
+      link="left_arm_link_1_2" />
+    <child
+      link="left_arm_link_2_3" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="0"
+      upper="0"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="left_arm_link_3_4">
+    <inertial>
+      <origin
+        xyz="6.6611577816178E-05 0.00972343067585797 0.11150949773672"
+        rpy="0 0 0" />
+      <mass
+        value="0.896018108797937" />
+      <inertia
+        ixx="0.00172628223662743"
+        ixy="-3.06077863204356E-07"
+        ixz="-6.31257988057324E-07"
+        iyy="0.00167501444901381"
+        iyz="-0.000284584988629101"
+        izz="0.00118995074389738" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://HRO-c2-v1/meshes/left_arm_link_3_4.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0 0.180392156862745 0.352941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://HRO-c2-v1/meshes/left_arm_link_3_4.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="left_arm_joint_3"
+    type="revolute">
+    <origin
+      xyz="-0.000101671704491157 0.155917928242505 -0.000999999999999994"
+      rpy="-1.5707963267949 0 0" />
+    <parent
+      link="left_arm_link_2_3" />
+    <child
+      link="left_arm_link_3_4" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="0"
+      upper="0"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="left_arm_link_4_5">
+    <inertial>
+      <origin
+        xyz="-5.49865813643247E-05 0.0775910844580704 0.0234807779439432"
+        rpy="0 0 0" />
+      <mass
+        value="0.754320266598631" />
+      <inertia
+        ixx="0.00179236507671689"
+        ixy="6.90133910317577E-07"
+        ixz="-3.21555655297684E-07"
+        iyy="0.000991242563053442"
+        iyz="0.000365224224174344"
+        izz="0.00172043416957939" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://HRO-c2-v1/meshes/left_arm_link_4_5.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0 0.180392156862745 0.352941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://HRO-c2-v1/meshes/left_arm_link_4_5.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="left_arm_joint_4"
+    type="revolute">
+    <origin
+      xyz="0.000101671704490991 0.001 0.144082071757494"
+      rpy="1.5707963267949 0 0" />
+    <parent
+      link="left_arm_link_3_4" />
+    <child
+      link="left_arm_link_4_5" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="0"
+      upper="0"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="left_arm_link_5_6">
+    <inertial>
+      <origin
+        xyz="6.35484435694278E-05 0.0159543182163423 0.103902471984837"
+        rpy="0 0 0" />
+      <mass
+        value="0.629719453932973" />
+      <inertia
+        ixx="0.0011592397377618"
+        ixy="-2.47395702835245E-07"
+        ixz="-3.72363128329068E-07"
+        iyy="0.00114946651859718"
+        iyz="-0.000215922229319279"
+        izz="0.000695741492012087" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://HRO-c2-v1/meshes/left_arm_link_5_6.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0 0.180392156862745 0.352941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://HRO-c2-v1/meshes/left_arm_link_5_6.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="left_arm_joint_5"
+    type="revolute">
+    <origin
+      xyz="-0.000101671704491157 0.155917928242505 -0.001"
+      rpy="-1.5707963267949 0 0" />
+    <parent
+      link="left_arm_link_4_5" />
+    <child
+      link="left_arm_link_5_6" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="0"
+      upper="0"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="left_arm_link_6_7">
+    <inertial>
+      <origin
+        xyz="-5.55440967294207E-05 0.064589598006602 0.0130664227994461"
+        rpy="0 0 0" />
+      <mass
+        value="0.603009447641394" />
+      <inertia
+        ixx="0.000896383140689378"
+        ixy="4.10066188275672E-07"
+        ixz="-1.9335137122609E-07"
+        iyy="0.0006419209613309"
+        iyz="0.000161415996999138"
+        izz="0.000893939105049779" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://HRO-c2-v1/meshes/left_arm_link_6_7.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0 0.180392156862745 0.352941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://HRO-c2-v1/meshes/left_arm_link_6_7.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="left_arm_joint_6"
+    type="revolute">
+    <origin
+      xyz="8.89857532566651E-05 0.00100000000000001 0.139053221189858"
+      rpy="1.5707963267949 0 0" />
+    <parent
+      link="left_arm_link_5_6" />
+    <child
+      link="left_arm_link_6_7" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="0"
+      upper="0"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="left_arm_link_7_flange">
+    <inertial>
+      <origin
+        xyz="-5.55111512312578E-17 -2.25514051876985E-17 0.0301250008394434"
+        rpy="0 0 0" />
+      <mass
+        value="0.177051025330653" />
+      <inertia
+        ixx="0.000118796552031385"
+        ixy="-5.68939265797987E-36"
+        ixz="1.95913932896201E-20"
+        iyy="0.000118796552031385"
+        iyz="-1.11534853854529E-21"
+        izz="0.000183558435030557" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://HRO-c2-v1/meshes/left_arm_link_7_flange.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0 0.180392156862745 0.352941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://HRO-c2-v1/meshes/left_arm_link_7_flange.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="left_arm_joint_7"
+    type="revolute">
+    <origin
+      xyz="-8.89857532564986E-05 0.114946778810142 -0.000999999999999996"
+      rpy="-1.5707963267949 0 0" />
+    <parent
+      link="left_arm_link_6_7" />
+    <child
+      link="left_arm_link_7_flange" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="0"
+      upper="0"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="right_leg_link_1_2">
+    <inertial>
+      <origin
+        xyz="0.0187737687333483 -0.0799753208695129 0.0291053393784098"
+        rpy="0 0 0" />
+      <mass
+        value="1.91641217571984" />
+      <inertia
+        ixx="0.00536305220858553"
+        ixy="0.0015254699824329"
+        ixz="-1.56831294556851E-05"
+        iyy="0.00241943278094351"
+        iyz="-5.84573412750941E-05"
+        izz="0.00592596030594809" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://HRO-c2-v1/meshes/right_leg_link_1_2.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0 0.180392156862745 0.352941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://HRO-c2-v1/meshes/right_leg_link_1_2.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="right_leg_joint_1"
+    type="revolute">
+    <origin
+      xyz="-0.03 -0.1 -0.05"
+      rpy="1.5708 0 1.5708" />
+    <parent
+      link="torso_base_link" />
+    <child
+      link="right_leg_link_1_2" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="0"
+      upper="0"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="right_leg_link_2_3">
+    <inertial>
+      <origin
+        xyz="6.31217927510246E-05 -0.106217157949777 0.019012200980757"
+        rpy="0 0 0" />
+      <mass
+        value="0.960297020805429" />
+      <inertia
+        ixx="0.00253388889667181"
+        ixy="9.72671733248472E-07"
+        ixz="3.95401438652672E-07"
+        iyy="0.00134969836656703"
+        iyz="-0.000477220247538095"
+        izz="0.00244163494161061" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://HRO-c2-v1/meshes/right_leg_link_2_3.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0 0.180392156862745 0.352941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://HRO-c2-v1/meshes/right_leg_link_2_3.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="right_leg_joint_2"
+    type="revolute">
+    <origin
+      xyz="-0.000999999999999959 -0.124082071757494 0.029998328295509"
+      rpy="0 -1.5707963267949 0" />
+    <parent
+      link="right_leg_link_1_2" />
+    <child
+      link="right_leg_link_2_3" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="0"
+      upper="0"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="right_leg_link_3_4">
+    <inertial>
+      <origin
+        xyz="-6.98893011698929E-05 -0.01032115118302 0.131072309778655"
+        rpy="0 0 0" />
+      <mass
+        value="0.928188916171351" />
+      <inertia
+        ixx="0.0022222868624958"
+        ixy="-3.10931297585512E-07"
+        ixz="1.19667246604344E-06"
+        iyy="0.00217452041555269"
+        iyz="0.00037633875802305"
+        izz="0.00124893833995951" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://HRO-c2-v1/meshes/right_leg_link_3_4.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0 0.180392156862745 0.352941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://HRO-c2-v1/meshes/right_leg_link_3_4.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="right_leg_joint_3"
+    type="revolute">
+    <origin
+      xyz="0.000101671704490934 -0.175917928242506 -0.001"
+      rpy="1.5707963267949 0 0" />
+    <parent
+      link="right_leg_link_2_3" />
+    <child
+      link="right_leg_link_3_4" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="0"
+      upper="0"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="right_leg_link_4_5">
+    <inertial>
+      <origin
+        xyz="5.19678802702193E-05 -0.0882835437975573 0.0237427814794535"
+        rpy="0 0 0" />
+      <mass
+        value="0.774400602834919" />
+      <inertia
+        ixx="0.00215315436642249"
+        ixy="8.73944511776648E-07"
+        ixz="3.97802806915571E-07"
+        iyy="0.00102989977137454"
+        iyz="-0.000439833002381071"
+        izz="0.00207720146014271" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://HRO-c2-v1/meshes/right_leg_link_4_5.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0 0.180392156862745 0.352941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://HRO-c2-v1/meshes/right_leg_link_4_5.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="right_leg_joint_4"
+    type="revolute">
+    <origin
+      xyz="-0.000101671704490671 -0.00100000000000001 0.174082071757495"
+      rpy="-1.5707963267949 0 0" />
+    <parent
+      link="right_leg_link_3_4" />
+    <child
+      link="right_leg_link_4_5" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="0"
+      upper="0"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="right_leg_link_5_6">
+    <inertial>
+      <origin
+        xyz="-6.10693669290388E-05 -0.0164428439695284 0.123012703864981"
+        rpy="0 0 0" />
+      <mass
+        value="0.662392371788132" />
+      <inertia
+        ixx="0.00157330538844869"
+        ixy="-2.42500581153194E-07"
+        ixz="3.08107599004869E-07"
+        iyy="0.00156804432194175"
+        iyz="0.00028774505215888"
+        izz="0.000745824849757463" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://HRO-c2-v1/meshes/right_leg_link_5_6.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0 0.180392156862745 0.352941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://HRO-c2-v1/meshes/right_leg_link_5_6.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="right_leg_joint_5"
+    type="revolute">
+    <origin
+      xyz="0.000101671704490709 -0.175917928242505 -0.000999999999999987"
+      rpy="1.5707963267949 0 0" />
+    <parent
+      link="right_leg_link_4_5" />
+    <child
+      link="right_leg_link_5_6" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="0"
+      upper="0"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="right_leg_link_6_7">
+    <inertial>
+      <origin
+        xyz="5.55440967294612E-05 -0.0645895980066015 0.0130664227994463"
+        rpy="0 0 0" />
+      <mass
+        value="0.603009447641397" />
+      <inertia
+        ixx="0.000896383140689379"
+        ixy="4.10066188287541E-07"
+        ixz="1.93351371224935E-07"
+        iyy="0.000641920961330903"
+        iyz="-0.000161415996999139"
+        izz="0.000893939105049785" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://HRO-c2-v1/meshes/right_leg_link_6_7.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0 0.180392156862745 0.352941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://HRO-c2-v1/meshes/right_leg_link_6_7.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="right_leg_joint_6"
+    type="revolute">
+    <origin
+      xyz="-8.89857532565484E-05 -0.00100000000000001 0.169053221189858"
+      rpy="-1.5707963267949 0 0" />
+    <parent
+      link="right_leg_link_5_6" />
+    <child
+      link="right_leg_link_6_7" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="0"
+      upper="0"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="right_foot">
+    <inertial>
+      <origin
+        xyz="0.0241549347415607 -1.38777878078145E-17 0.0493964918723007"
+        rpy="0 0 0" />
+      <mass
+        value="0.712809875248307" />
+      <inertia
+        ixx="0.000425877652408794"
+        ixy="-1.609489654618E-19"
+        ixz="6.02911944625875E-06"
+        iyy="0.00158617636175482"
+        iyz="1.42167247423895E-20"
+        izz="0.00193887163391243" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://HRO-c2-v1/meshes/right_foot.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0 0.180392156862745 0.352941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://HRO-c2-v1/meshes/right_foot.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="right_leg_joint_7"
+    type="revolute">
+    <origin
+      xyz="8.89857532565355E-05 -0.114946778810142 -0.001"
+      rpy="1.5707963267949 0 0" />
+    <parent
+      link="right_leg_link_6_7" />
+    <child
+      link="right_foot" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="0"
+      upper="0"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="left_leg_link_1_2">
+    <inertial>
+      <origin
+        xyz="-0.0187737687333483 -0.0799753208695129 0.0291053393784099"
+        rpy="0 0 0" />
+      <mass
+        value="1.91641217571983" />
+      <inertia
+        ixx="0.00536305220858552"
+        ixy="-0.00152546998243291"
+        ixz="1.56831294556847E-05"
+        iyy="0.00241943278094351"
+        iyz="-5.84573412750956E-05"
+        izz="0.00592596030594808" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://HRO-c2-v1/meshes/left_leg_link_1_2.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0 0.180392156862745 0.352941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://HRO-c2-v1/meshes/left_leg_link_1_2.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="left_leg_joint_1"
+    type="revolute">
+    <origin
+      xyz="-0.03 0.1 -0.05"
+      rpy="1.5707963267949 0 1.5707963267949" />
+    <parent
+      link="torso_base_link" />
+    <child
+      link="left_leg_link_1_2" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="0"
+      upper="0"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="left_leg_link_2_3">
+    <inertial>
+      <origin
+        xyz="-4.7896055792111E-05 0.079881456432898 0.00831301576050686"
+        rpy="0 0 0" />
+      <mass
+        value="1.2765673429708" />
+      <inertia
+        ixx="0.00289462151649054"
+        ixy="9.72698084278204E-07"
+        ixz="-3.95472998528286E-07"
+        iyy="0.00171043095688368"
+        iyz="0.000477220208076753"
+        izz="0.00274778464572006" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://HRO-c2-v1/meshes/left_leg_link_2_3.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.352941176470588 0.176470588235294 0 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://HRO-c2-v1/meshes/left_leg_link_2_3.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="left_leg_joint_2"
+    type="revolute">
+    <origin
+      xyz="0.001 -0.124082071757494 0.0300016717044909"
+      rpy="3.14159265358979 -1.5707963267949 0" />
+    <parent
+      link="left_leg_link_1_2" />
+    <child
+      link="left_leg_link_2_3" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="0"
+      upper="0"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="left_leg_link_3_4">
+    <inertial>
+      <origin
+        xyz="6.98911337971829E-05 0.0103211509348096 0.131072311142677"
+        rpy="0 0 0" />
+      <mass
+        value="0.928188897548377" />
+      <inertia
+        ixx="0.00222228684330113"
+        ixy="-3.10929884290934E-07"
+        ixz="-1.19663366064781E-06"
+        iyy="0.00217452039277163"
+        iyz="-0.000376338758038212"
+        izz="0.00124893833495017" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://HRO-c2-v1/meshes/left_leg_link_3_4.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0 0.180392156862745 0.352941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://HRO-c2-v1/meshes/left_leg_link_3_4.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="left_leg_joint_3"
+    type="revolute">
+    <origin
+      xyz="-0.000101671704490934 0.175917928242506 -0.001"
+      rpy="-1.5707963267949 0 0" />
+    <parent
+      link="left_leg_link_2_3" />
+    <child
+      link="left_leg_link_3_4" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="0"
+      upper="0"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="left_leg_link_4_5">
+    <inertial>
+      <origin
+        xyz="-5.19728980263161E-05 0.0882835378669332 0.0237427888531114"
+        rpy="0 0 0" />
+      <mass
+        value="0.774400761417378" />
+      <inertia
+        ixx="0.00215315446342486"
+        ixy="8.73940873619505E-07"
+        ixz="-3.97696557147387E-07"
+        iyy="0.00102989996878608"
+        iyz="0.000439833004698648"
+        izz="0.00207720156075221" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://HRO-c2-v1/meshes/left_leg_link_4_5.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0 0.180392156862745 0.352941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://HRO-c2-v1/meshes/left_leg_link_4_5.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="left_leg_joint_4"
+    type="revolute">
+    <origin
+      xyz="0.00010167170449067 0.00100000000000001 0.174082071757495"
+      rpy="1.5707963267949 0 0" />
+    <parent
+      link="left_leg_link_3_4" />
+    <child
+      link="left_leg_link_4_5" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="0"
+      upper="0"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="left_leg_link_5_6">
+    <inertial>
+      <origin
+        xyz="6.10693669287858E-05 0.0164428439695287 0.123012703864981"
+        rpy="0 0 0" />
+      <mass
+        value="0.662392371788149" />
+      <inertia
+        ixx="0.00157330538844873"
+        ixy="-2.42500581150457E-07"
+        ixz="-3.08107599000823E-07"
+        iyy="0.00156804432194181"
+        iyz="-0.000287745052158881"
+        izz="0.000745824849757476" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://HRO-c2-v1/meshes/left_leg_link_5_6.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0 0.180392156862745 0.352941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://HRO-c2-v1/meshes/left_leg_link_5_6.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="left_leg_joint_5"
+    type="revolute">
+    <origin
+      xyz="-0.000101671704490709 0.175917928242505 -0.001"
+      rpy="-1.5707963267949 0 0" />
+    <parent
+      link="left_leg_link_4_5" />
+    <child
+      link="left_leg_link_5_6" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="0"
+      upper="0"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="left_leg_link_6_7">
+    <inertial>
+      <origin
+        xyz="-5.55440967287538E-05 0.0645895980066017 0.0130664227994462"
+        rpy="0 0 0" />
+      <mass
+        value="0.60300944764139" />
+      <inertia
+        ixx="0.00089638314068938"
+        ixy="4.10066188274902E-07"
+        ixz="-1.93351371226564E-07"
+        iyy="0.000641920961330898"
+        iyz="0.000161415996999143"
+        izz="0.000893939105049778" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://HRO-c2-v1/meshes/left_leg_link_6_7.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0 0.180392156862745 0.352941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://HRO-c2-v1/meshes/left_leg_link_6_7.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="left_leg_joint_6"
+    type="revolute">
+    <origin
+      xyz="8.89857532565419E-05 0.00100000000000001 0.169053221189858"
+      rpy="1.5707963267949 0 0" />
+    <parent
+      link="left_leg_link_5_6" />
+    <child
+      link="left_leg_link_6_7" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="0"
+      upper="0"
+      effort="0"
+      velocity="0" />
+  </joint>
+  <link
+    name="left_foot">
+    <inertial>
+      <origin
+        xyz="0.024154934741561 0 0.0493964918723007"
+        rpy="0 0 0" />
+      <mass
+        value="0.712809875248304" />
+      <inertia
+        ixx="0.000425877652408792"
+        ixy="-1.36144354303111E-19"
+        ixz="6.02911944625945E-06"
+        iyy="0.00158617636175481"
+        iyz="6.5514154345866E-21"
+        izz="0.00193887163391242" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://HRO-c2-v1/meshes/left_foot.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0 0.180392156862745 0.352941176470588 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://HRO-c2-v1/meshes/left_foot.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="left_leg_joint_7"
+    type="revolute">
+    <origin
+      xyz="-8.89857532565216E-05 0.114946778810142 -0.001"
+      rpy="-1.5707963267949 0 0" />
+    <parent
+      link="left_leg_link_6_7" />
+    <child
+      link="left_foot" />
+    <axis
+      xyz="0 0 1" />
+    <limit
+      lower="0"
+      upper="0"
+      effort="0"
+      velocity="0" />
+  </joint>
+</robot>

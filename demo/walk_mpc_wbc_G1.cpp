@@ -52,7 +52,7 @@ int main(int argc, char **argv)
     footPlacement.kp_vx = 0.03 * 5;
     footPlacement.kp_vy = 0.03;
     footPlacement.kp_wz = 0.03;
-    footPlacement.stepHeight = 0.1 * 0.5;
+    footPlacement.stepHeight = 0.1 * 0.8;
     footPlacement.legLength = stand_legLength;
 
     gaitScheduler.FzThrehold = 100;
