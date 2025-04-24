@@ -21,11 +21,37 @@ public:
     double baseLinVel[3]{0}; // linear velocity of baselink, in body frame
 
     // For HRO-c2-v1
-    const std::vector<std::string> JointName = {"torso_pan_joint", "torso_tilt_joint",
-                                                "right_arm_joint_1", "right_arm_joint_2", "right_arm_joint_3", "right_arm_joint_4", "right_arm_joint_5", "right_arm_joint_6", "right_arm_joint_7",
-                                                "left_arm_joint_1", "left_arm_joint_2", "left_arm_joint_3", "left_arm_joint_4", "left_arm_joint_5", "left_arm_joint_6", "left_arm_joint_7",
-                                                "right_leg_joint_1", "right_leg_joint_2", "right_leg_joint_3", "right_leg_joint_4", "right_leg_joint_5", "right_leg_joint_6", "right_leg_joint_7",
-                                                "left_leg_joint_1", "left_leg_joint_2", "left_leg_joint_3", "left_leg_joint_4", "left_leg_joint_5", "left_leg_joint_6", "left_leg_joint_7"};
+    const std::vector<std::string> JointName = {
+        "left_leg_joint_1",
+        "left_leg_joint_2",
+        "left_leg_joint_3",
+        "left_leg_joint_4",
+        "left_leg_joint_5",
+        "left_leg_joint_6",
+        "left_leg_joint_7",
+        "right_leg_joint_1",
+        "right_leg_joint_2",
+        "right_leg_joint_3",
+        "right_leg_joint_4",
+        "right_leg_joint_5",
+        "right_leg_joint_6",
+        "right_leg_joint_7",
+        "torso_pan_joint",
+        "torso_tilt_joint",
+        "left_arm_joint_1",
+        "left_arm_joint_2",
+        "left_arm_joint_3",
+        "left_arm_joint_4",
+        "left_arm_joint_5",
+        "left_arm_joint_6",
+        "left_arm_joint_7",
+        "right_arm_joint_1",
+        "right_arm_joint_2",
+        "right_arm_joint_3",
+        "right_arm_joint_4",
+        "right_arm_joint_5",
+        "right_arm_joint_6",
+        "right_arm_joint_7"};
 
     const std::string baseName = "torso";
 

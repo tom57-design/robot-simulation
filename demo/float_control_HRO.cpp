@@ -27,9 +27,9 @@ int main(int argc, const char **argv)
     DataLogger logger("../record/datalog.log");                                         // data logger
 
     // variables ini
-    double stand_legLength = 1.2; //-0.95; // desired baselink height
-    double foot_height = 0.07;    // distance between the foot ankel joint and the bottom
-    double xv_des = 0.7;          // desired velocity in x direction
+    double stand_legLength = 0.85; //-0.95; // desired baselink height
+    double foot_height = 0.07;     // distance between the foot ankel joint and the bottom
+    double xv_des = 0.7;           // desired velocity in x direction
 
     RobotState.width_hips = 0.229;
     // mju_copy(mj_data->qpos, mj_model->key_qpos, mj_model->nq*1); // set ini pos in Mujoco
@@ -45,16 +45,16 @@ int main(int argc, const char **argv)
 
     Eigen::Vector3d fe_l_pos_L_des = {-0.0, 0.3, -stand_legLength};
     Eigen::Vector3d fe_r_pos_L_des = {-0.0, -0.3, -stand_legLength};
-    Eigen::Vector3d fe_l_eul_L_des = {-0.000, -0.00, -0.000};
-    Eigen::Vector3d fe_r_eul_L_des = {0.000, -0.00, 0.000};
+    Eigen::Vector3d fe_l_eul_L_des = {M_PI, -0.00, -0.000};
+    Eigen::Vector3d fe_r_eul_L_des = {M_PI, -0.00, 0.000};
 
     Eigen::Matrix3d fe_l_rot_des = eul2Rot(fe_l_eul_L_des(0), fe_l_eul_L_des(1), fe_l_eul_L_des(2));
     Eigen::Matrix3d fe_r_rot_des = eul2Rot(fe_r_eul_L_des(0), fe_r_eul_L_des(1), fe_r_eul_L_des(2));
 
-    Eigen::Vector3d hd_l_pos_L_des = {-0.0, 0.8, -0.02};
-    Eigen::Vector3d hd_r_pos_L_des = {-0.0, -0.8, -0.02};
-    Eigen::Vector3d hd_l_eul_L_des = {0, 0, 0};
-    Eigen::Vector3d hd_r_eul_L_des = {0, 0, 0};
+    Eigen::Vector3d hd_l_pos_L_des = {-0.0, 0.8, +0.02};
+    Eigen::Vector3d hd_r_pos_L_des = {-0.0, -0.8, +0.02};
+    Eigen::Vector3d hd_l_eul_L_des = {M_PI, 0, M_PI / 2};
+    Eigen::Vector3d hd_r_eul_L_des = {M_PI, 0, M_PI / 2};
 
     Eigen::Matrix3d hd_l_rot_des = eul2Rot(hd_l_eul_L_des(0), hd_l_eul_L_des(1), hd_l_eul_L_des(2));
     Eigen::Matrix3d hd_r_rot_des = eul2Rot(hd_r_eul_L_des(0), hd_r_eul_L_des(1), hd_r_eul_L_des(2));
@@ -95,22 +95,22 @@ int main(int argc, const char **argv)
             mj_step(mj_model, mj_data);
 
             simTime = mj_data->time;
-            printf("-------------%.3f s------------\n", simTime);
+            // printf("-------------%.3f s------------\n", simTime);
             mj_interface.updateSensorValues();
             mj_interface.dataBusWrite(RobotState);
 
             fe_l_pos_L_des = {-0.0, 0.3, -stand_legLength};
             fe_r_pos_L_des = {-0.0, -0.3, -stand_legLength};
-            fe_l_eul_L_des = {-0.000, -0.00, -0.000};
-            fe_r_eul_L_des = {0.000, -0.00, 0.000};
+            fe_l_eul_L_des = {M_PI, -0.00, -0.000};
+            fe_r_eul_L_des = {M_PI, -0.00, 0.000};
 
             fe_l_rot_des = eul2Rot(fe_l_eul_L_des(0), fe_l_eul_L_des(1), fe_l_eul_L_des(2));
             fe_r_rot_des = eul2Rot(fe_r_eul_L_des(0), fe_r_eul_L_des(1), fe_r_eul_L_des(2));
 
-            hd_l_pos_L_des = {-0.0, 0.8, -0.02};
-            hd_r_pos_L_des = {-0.0, -0.8, -0.02};
-            hd_l_eul_L_des = {0, 0, 0};
-            hd_r_eul_L_des = {0, 0, 0};
+            hd_l_pos_L_des = {-0.0, 0.8, +0.02};
+            hd_r_pos_L_des = {-0.0, -0.8, +0.02};
+            hd_l_eul_L_des = {M_PI, 0, M_PI / 2};
+            hd_r_eul_L_des = {M_PI, 0, M_PI / 2};
 
             hd_l_rot_des = eul2Rot(hd_l_eul_L_des(0), hd_l_eul_L_des(1), hd_l_eul_L_des(2));
             hd_r_rot_des = eul2Rot(hd_r_eul_L_des(0), hd_r_eul_L_des(1), hd_r_eul_L_des(2));
@@ -136,12 +136,38 @@ int main(int argc, const char **argv)
             }
             else
             {
-                //                pvtCtr.setJointPD(100,10,"Joint-ankel-l-pitch");
-                //                pvtCtr.setJointPD(100,10,"Joint-ankel-l-roll");
-                //                pvtCtr.setJointPD(100,10,"Joint-ankel-r-pitch");
-                //                pvtCtr.setJointPD(100,10,"Joint-ankel-r-roll");
-                //                pvtCtr.setJointPD(1000,100,"Joint-knee-l-pitch");
-                //                pvtCtr.setJointPD(1000,100,"Joint-knee-r-pitch");
+                pvtCtr.setJointPD(500, 100, "right_arm_joint_1");
+                pvtCtr.setJointPD(500, 100, "right_arm_joint_2");
+                pvtCtr.setJointPD(500, 100, "right_arm_joint_3");
+                pvtCtr.setJointPD(500, 100, "right_arm_joint_4");
+                pvtCtr.setJointPD(500, 100, "right_arm_joint_5");
+                pvtCtr.setJointPD(500, 100, "right_arm_joint_6");
+                pvtCtr.setJointPD(500, 100, "right_arm_joint_7");
+
+                pvtCtr.setJointPD(500, 100, "left_arm_joint_1");
+                pvtCtr.setJointPD(500, 100, "left_arm_joint_2");
+                pvtCtr.setJointPD(500, 100, "left_arm_joint_3");
+                pvtCtr.setJointPD(500, 100, "left_arm_joint_4");
+                pvtCtr.setJointPD(500, 100, "left_arm_joint_5");
+                pvtCtr.setJointPD(500, 100, "left_arm_joint_6");
+                pvtCtr.setJointPD(500, 100, "left_arm_joint_7");
+
+                pvtCtr.setJointPD(500, 100, "right_leg_joint_1");
+                pvtCtr.setJointPD(500, 100, "right_leg_joint_2");
+                pvtCtr.setJointPD(500, 100, "right_leg_joint_3");
+                pvtCtr.setJointPD(500, 100, "right_leg_joint_4");
+                pvtCtr.setJointPD(500, 100, "right_leg_joint_5");
+                pvtCtr.setJointPD(500, 100, "right_leg_joint_6");
+                pvtCtr.setJointPD(500, 100, "right_leg_joint_7");
+
+                pvtCtr.setJointPD(500, 100, "left_leg_joint_1");
+                pvtCtr.setJointPD(500, 100, "left_leg_joint_2");
+                pvtCtr.setJointPD(500, 100, "left_leg_joint_3");
+                pvtCtr.setJointPD(500, 100, "left_leg_joint_4");
+                pvtCtr.setJointPD(500, 100, "left_leg_joint_5");
+                pvtCtr.setJointPD(500, 100, "left_leg_joint_6");
+                pvtCtr.setJointPD(500, 100, "left_leg_joint_7");
+
                 pvtCtr.calMotorsPVT();
             }
             pvtCtr.dataBusWrite(RobotState);

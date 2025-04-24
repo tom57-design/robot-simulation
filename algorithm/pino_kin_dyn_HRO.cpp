@@ -37,14 +37,14 @@ Pin_KinDyn_HRO::Pin_KinDyn_HRO(std::string urdf_pathIn)
     l_hand_joint = model_biped.getJointId("left_arm_joint_7");
     r_hand_joint_fixed = model_biped_fixed.getJointId("right_arm_joint_7");
     l_hand_joint_fixed = model_biped_fixed.getJointId("left_arm_joint_7");
-    r_hip_joint = model_biped.getJointId("right_leg_joint_2");
-    l_hip_joint = model_biped.getJointId("left_leg_joint_2");
-    r_hip_roll_joint = model_biped.getJointId("right_leg_joint_1");
-    l_hip_roll_joint = model_biped.getJointId("left_leg_joint_1");
+    r_hip_joint = model_biped.getJointId("right_leg_joint_1");
+    l_hip_joint = model_biped.getJointId("left_leg_joint_1");
+    r_hip_roll_joint = model_biped.getJointId("right_leg_joint_2");
+    l_hip_roll_joint = model_biped.getJointId("left_leg_joint_2");
     r_ankle_joint_fixed = model_biped_fixed.getJointId("right_leg_joint_7");
     l_ankle_joint_fixed = model_biped_fixed.getJointId("left_leg_joint_7");
-    r_hip_joint_fixed = model_biped_fixed.getJointId("right_leg_joint_2");
-    l_hip_joint_fixed = model_biped_fixed.getJointId("left_leg_joint_2");
+    r_hip_joint_fixed = model_biped_fixed.getJointId("right_leg_joint_1");
+    l_hip_joint_fixed = model_biped_fixed.getJointId("left_leg_joint_1");
 
     base_joint = model_biped.getJointId("root_joint");
     waist_yaw_joint = model_biped.getJointId("torso_pan_joint");
@@ -66,6 +66,8 @@ Pin_KinDyn_HRO::Pin_KinDyn_HRO(std::string urdf_pathIn)
     }
     motorReachLimit.assign(motorName.size(), false);
     tauJointOld = Eigen::VectorXd::Zero(motorName.size());
+
+    debugPrintJointOrder(model_biped); // Check Joint Order
 }
 
 void Pin_KinDyn_HRO::dataBusRead(const DataBus &robotState)
@@ -322,16 +324,15 @@ Pin_KinDyn_HRO::computeInK_Leg(const Eigen::Matrix3d &Rdes_L, const Eigen::Vecto
     const pinocchio::SE3 oMdesR(Rdes_R, Pdes_R);
 
     //**** For HRO-c2-v1 ****//
-    // waist-yaw: 0,
-    // waist-pitch: 1,
-    // shoulder-r: 2-4, elbow-r: 5, wrist-r: 6-8,
-    // shoulder-l: 9-11, elbow-l: 12, wrist-l: 13-15,
-    // hip-r: 16-18, knee-r: 19, ankle-r: 20-22,
-    // hip-l: 23-25, knee-l: 26, ankle-l: 27-29,
+    // left leg: 0-6
+    // right leg: 7-13
+    // torso: 14-15
+    // left arm: 16-22
+    // right arm: 23-29
 
     Eigen::VectorXd qIk = Eigen::VectorXd::Zero(model_biped_fixed.nv); // initial guess
-    qIk[26] = -0.1;                                                    // left knee swing back
-    qIk[19] = -0.1;                                                    // right knee
+    qIk[3] = +0.1;                                                    // left knee swing back
+    qIk[10] = -0.1;                                                    // right knee
 
     const double eps = 1e-4;
     const int IT_MAX = 100;
@@ -432,15 +433,14 @@ Pin_KinDyn_HRO::computeInK_Hand(const Eigen::Matrix3d &Rdes_L, const Eigen::Vect
     Eigen::VectorXd qIk = Eigen::VectorXd::Zero(model_biped_fixed.nv); // initial guess
 
     //**** For HRO-c2-v1 ****//
-    // waist-yaw: 0,
-    // waist-pitch: 1,
-    // shoulder-r: 2-4, elbow-r: 5, wrist-r: 6-8,
-    // shoulder-l: 9-11, elbow-l: 12, wrist-l: 13-15,
-    // hip-r: 16-18, knee-r: 19, ankle-r: 20-22,
-    // hip-l: 23-25, knee-l: 26, ankle-l: 27-29,
+    // left leg: 0-6
+    // right leg: 7-13
+    // torso: 14-15
+    // left arm: 16-22
+    // right arm: 23-29
 
-    qIk.block<7, 1>(2, 0) << 0, 0, 0, 0, 0;
-    qIk.block<7, 1>(9, 0) << 0, 0, 0, 0, 0;
+    qIk.block<7, 1>(16, 0) << 0, 0, 0, 0, 0;
+    qIk.block<7, 1>(23, 0) << 0, 0, 0, 0, 0;
 
     const double eps = 1e-4;
     const int IT_MAX = 100;
@@ -537,4 +537,17 @@ void Pin_KinDyn_HRO::workspaceConstraint(Eigen::VectorXd &qFT, Eigen::VectorXd &
             motorReachLimit[i] = false;
 
     tauJointOld = tauJointFT;
+}
+
+void Pin_KinDyn_HRO::debugPrintJointOrder(const pinocchio::Model &model)
+{
+    std::cout << "\n--- Pinocchio Joint Order ---\n";
+    for (pinocchio::JointIndex i = 0; i < model.joints.size(); ++i)
+    {
+        const auto &joint = model.joints[i];
+        std::cout << "[" << i << "] "
+                  << "Name: " << model.names[i]
+                  << ", idx_q: " << joint.idx_q()
+                  << ", nq: " << joint.nq() << std::endl;
+    }
 }
