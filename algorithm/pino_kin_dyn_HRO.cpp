@@ -331,7 +331,7 @@ Pin_KinDyn_HRO::computeInK_Leg(const Eigen::Matrix3d &Rdes_L, const Eigen::Vecto
     // right arm: 23-29
 
     Eigen::VectorXd qIk = Eigen::VectorXd::Zero(model_biped_fixed.nv); // initial guess
-    qIk[3] = +0.1;                                                    // left knee swing back
+    qIk[3] = +0.1;                                                     // left knee swing back
     qIk[10] = -0.1;                                                    // right knee
 
     const double eps = 1e-4;
@@ -380,16 +380,15 @@ Pin_KinDyn_HRO::computeInK_Leg(const Eigen::Matrix3d &Rdes_L, const Eigen::Vecto
         W = Eigen::MatrixXd::Identity(model_biped_fixed.nv, model_biped_fixed.nv); // weighted matrix
 
         //**** For HRO-c2-v1 ****//
-        // waist-yaw: 0,
-        // waist-pitch: 1,
-        // shoulder-r: 2-4, elbow-r: 5, wrist-r: 6-8,
-        // shoulder-l: 9-11, elbow-l: 12, wrist-l: 13-15,
-        // hip-r: 16-18, knee-r: 19, ankle-r: 20-22,
-        // hip-l: 23-25, knee-l: 26, ankle-l: 27-29,
+        // left leg: 0-6
+        // right leg: 7-13
+        // torso: 14-15
+        // left arm: 16-22
+        // right arm: 23-29
 
-        W(0, 0) = 0.0001;               // use a smaller value to make the solver try not to use waist joint
-        JL.block(0, 0, 6, 2).setZero(); // 0: waist
-        JR.block(0, 0, 6, 2).setZero(); // 0: waist
+        W(0, 0) = 0.0001;                // use a smaller value to make the solver try not to use waist joint
+        JL.block(0, 14, 6, 2).setZero(); // 14-15: waist
+        JR.block(0, 14, 6, 2).setZero(); // 14-15: waist
 
         pinocchio::Data::Matrix6 JlogL;
         pinocchio::Data::Matrix6 JlogR;
@@ -442,6 +441,12 @@ Pin_KinDyn_HRO::computeInK_Hand(const Eigen::Matrix3d &Rdes_L, const Eigen::Vect
     qIk.block<7, 1>(16, 0) << 0, 0, 0, 0, 0;
     qIk.block<7, 1>(23, 0) << 0, 0, 0, 0, 0;
 
+    qIk[18] = -0.1; // left arm shoulder yaw
+    qIk[25] = +0.1; // right arm shoulder yaw
+
+    qIk[19] = -0.1; // left arm elbow pitch
+    qIk[26] = +0.1; // right arm elbow pitch
+
     const double eps = 1e-4;
     const int IT_MAX = 100;
     const double DT = 6e-1;
@@ -488,6 +493,16 @@ Pin_KinDyn_HRO::computeInK_Hand(const Eigen::Matrix3d &Rdes_L, const Eigen::Vect
         pinocchio::Data::Matrix6 JlogR;
         pinocchio::Jlog6(iMdL.inverse(), JlogL);
         pinocchio::Jlog6(iMdR.inverse(), JlogR);
+
+        ////**** Added to avoid using waist DoF ****////
+        Eigen::MatrixXd W;
+        W = Eigen::MatrixXd::Identity(model_biped_fixed.nv, model_biped_fixed.nv); // weighted matrix
+
+        W(0, 0) = 0.0001;                // use a smaller value to make the solver try not to use waist joint
+        JL.block(0, 14, 6, 2).setZero(); // 14-15: waist
+        JR.block(0, 14, 6, 2).setZero(); // 14-15: waist
+        ////**** End of additional part ****////
+
         JL = -JlogL * JL;
         JR = -JlogR * JR;
         JCompact.block(0, 0, 6, model_biped_fixed.nv) = JL;

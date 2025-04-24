@@ -27,9 +27,9 @@ int main(int argc, const char **argv)
     DataLogger logger("../record/datalog.log");                                         // data logger
 
     // variables ini
-    double stand_legLength = 0.85; //-0.95; // desired baselink height
-    double foot_height = 0.07;     // distance between the foot ankel joint and the bottom
-    double xv_des = 0.7;           // desired velocity in x direction
+    double stand_legLength = 1.1; //-0.95; // desired baselink height
+    double foot_height = 0.07;    // distance between the foot ankel joint and the bottom
+    double xv_des = 0.7;          // desired velocity in x direction
 
     RobotState.width_hips = 0.229;
     // mju_copy(mj_data->qpos, mj_model->key_qpos, mj_model->nq*1); // set ini pos in Mujoco
@@ -43,16 +43,16 @@ int main(int argc, const char **argv)
     std::vector<double> motors_tau_des(model_nv - 6, 0);
     std::vector<double> motors_tau_cur(model_nv - 6, 0);
 
-    Eigen::Vector3d fe_l_pos_L_des = {-0.0, 0.3, -stand_legLength};
-    Eigen::Vector3d fe_r_pos_L_des = {-0.0, -0.3, -stand_legLength};
+    Eigen::Vector3d fe_l_pos_L_des = {-0.0, 0.15, -stand_legLength};
+    Eigen::Vector3d fe_r_pos_L_des = {-0.0, -0.15, -stand_legLength};
     Eigen::Vector3d fe_l_eul_L_des = {M_PI, -0.00, -0.000};
     Eigen::Vector3d fe_r_eul_L_des = {M_PI, -0.00, 0.000};
 
     Eigen::Matrix3d fe_l_rot_des = eul2Rot(fe_l_eul_L_des(0), fe_l_eul_L_des(1), fe_l_eul_L_des(2));
     Eigen::Matrix3d fe_r_rot_des = eul2Rot(fe_r_eul_L_des(0), fe_r_eul_L_des(1), fe_r_eul_L_des(2));
 
-    Eigen::Vector3d hd_l_pos_L_des = {-0.0, 0.8, +0.02};
-    Eigen::Vector3d hd_r_pos_L_des = {-0.0, -0.8, +0.02};
+    Eigen::Vector3d hd_l_pos_L_des = {-0.0, 0.4, -0.3};
+    Eigen::Vector3d hd_r_pos_L_des = {-0.0, -0.4, -0.3};
     Eigen::Vector3d hd_l_eul_L_des = {M_PI, 0, M_PI / 2};
     Eigen::Vector3d hd_r_eul_L_des = {M_PI, 0, M_PI / 2};
 
@@ -99,16 +99,16 @@ int main(int argc, const char **argv)
             mj_interface.updateSensorValues();
             mj_interface.dataBusWrite(RobotState);
 
-            fe_l_pos_L_des = {-0.0, 0.3, -stand_legLength};
-            fe_r_pos_L_des = {-0.0, -0.3, -stand_legLength};
+            fe_l_pos_L_des = {-0.0, 0.15, -stand_legLength + 0.15};
+            fe_r_pos_L_des = {-0.0, -0.15, -stand_legLength + 0.15};
             fe_l_eul_L_des = {M_PI, -0.00, -0.000};
             fe_r_eul_L_des = {M_PI, -0.00, 0.000};
 
             fe_l_rot_des = eul2Rot(fe_l_eul_L_des(0), fe_l_eul_L_des(1), fe_l_eul_L_des(2));
             fe_r_rot_des = eul2Rot(fe_r_eul_L_des(0), fe_r_eul_L_des(1), fe_r_eul_L_des(2));
 
-            hd_l_pos_L_des = {-0.0, 0.8, +0.02};
-            hd_r_pos_L_des = {-0.0, -0.8, +0.02};
+            hd_l_pos_L_des = {-0.0, 0.4, -0.2};
+            hd_r_pos_L_des = {-0.0, -0.4, -0.2};
             hd_l_eul_L_des = {M_PI, 0, M_PI / 2};
             hd_r_eul_L_des = {M_PI, 0, M_PI / 2};
 
