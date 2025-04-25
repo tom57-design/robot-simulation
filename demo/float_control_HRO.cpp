@@ -107,8 +107,8 @@ int main(int argc, const char **argv)
             fe_l_rot_des = eul2Rot(fe_l_eul_L_des(0), fe_l_eul_L_des(1), fe_l_eul_L_des(2));
             fe_r_rot_des = eul2Rot(fe_r_eul_L_des(0), fe_r_eul_L_des(1), fe_r_eul_L_des(2));
 
-            hd_l_pos_L_des = {-0.0, 0.4, -0.2};
-            hd_r_pos_L_des = {-0.0, -0.4, -0.2};
+            hd_l_pos_L_des = {-0.0, 0.4, -0.3};
+            hd_r_pos_L_des = {-0.0, -0.4, -0.3};
             hd_l_eul_L_des = {M_PI, 0, M_PI / 2};
             hd_r_eul_L_des = {M_PI, 0, M_PI / 2};
 
