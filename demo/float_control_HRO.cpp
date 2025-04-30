@@ -118,9 +118,6 @@ int main(int argc, const char **argv)
             resLeg = kinDynSolver.computeInK_Leg(fe_l_rot_des, fe_l_pos_L_des, fe_r_rot_des, fe_r_pos_L_des);
             resHand = kinDynSolver.computeInK_Hand(hd_l_rot_des, hd_l_pos_L_des, hd_r_rot_des, hd_r_pos_L_des);
 
-            // Enter here functions to send actuator commands, like:
-            // arm-l: 0-6, arm-r: 7-13, head: 14,15 waist: 16-18, leg-l: 19-24, leg-r: 25-30
-            // get the final joint command
             RobotState.motors_pos_des = eigen2std(resLeg.jointPosRes + resHand.jointPosRes);
             RobotState.motors_vel_des = motors_vel_des;
             RobotState.motors_tor_des = motors_tau_des;

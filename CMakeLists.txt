@@ -124,3 +124,6 @@ target_link_libraries(walk_mpc_wbc_G1 core mujoco ${sysSimLibs} dl)
 #### For HRO ####
 add_executable(float_control_HRO demo/float_control_HRO.cpp)
 target_link_libraries(float_control_HRO core mujoco ${sysSimLibs} dl)
+
+add_executable(squat_wbc_HRO demo/squat_wbc_HRO.cpp)
+target_link_libraries(squat_wbc_HRO core mujoco ${sysSimLibs} dl)
